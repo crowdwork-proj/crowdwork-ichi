@@ -24,7 +24,7 @@
     [[self window] setRootViewController:navController];
     
     // gọi thử api 
-    [[YouTubeAPILibs sharedManager] doLogin];
+    [[YouTubeAPILibs sharedManager] doLoginWithViewController: viewController];
     [[YouTubeAPILibs sharedManager] showMyListVideo];
     
     // Override point for customization after application launch.

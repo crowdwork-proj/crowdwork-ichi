@@ -15,6 +15,8 @@
 
 @implementation YouTubeAPILibs
 
+@synthesize youtubeService;
+
 + (id)sharedManager {
     static YouTubeAPILibs *sharedMyManager = nil;
     static dispatch_once_t onceToken;
@@ -29,7 +31,8 @@
 // Anh viết mẫu chứ chưa chạy đâu
 // =================================================================
 
-- (void)doLogin
+
+- (void)doLoginWithViewController: (UIViewController *) viewController
 {
     NSLog(@"---doLogin---");
     // Initialize the youtube service & load existing credentials from the keychain if available
@@ -37,14 +40,43 @@
     self.youtubeService.authorizer =
     [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
                                                           clientID:kClientID
-  
+     
                                                       clientSecret:kClientSecret];
     if (![self isAuthorized]) {
         // Not yet authorized, request authorization and push the login UI onto the navigation stack.
         
-        //[[self navigationController] pushViewController:[self createAuthController] animated:YES];
+        [[viewController navigationController] pushViewController:[self createAuthController] animated:YES];
     }
 }
+
+// Creates the auth controller for authorizing access to YouTube.
+- (GTMOAuth2ViewControllerTouch *)createAuthController
+{
+    GTMOAuth2ViewControllerTouch *authController;
+    
+    authController = [[GTMOAuth2ViewControllerTouch alloc] initWithScope:kGTLAuthScopeYouTube
+                                                                clientID:kClientID
+                                                            clientSecret:kClientSecret
+                                                        keychainItemName:kKeychainItemName
+                                                                delegate:self
+                                                        finishedSelector:@selector(viewController:finishedWithAuth:error:)];
+    return authController;
+}
+
+// Handle completion of the authorization process, and updates the YouTube service
+// with the new credentials.
+- (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
+      finishedWithAuth:(GTMOAuth2Authentication *)authResult
+                 error:(NSError *)error {
+    if (error != nil) {
+        [Utils showAlert:@"Authentication Error" message:error.localizedDescription];
+        self.youtubeService.authorizer = nil;
+    } else {
+        self.youtubeService.authorizer = authResult;
+    }
+}
+
+
 
 // =================================================================
 // 動画一覧
@@ -75,6 +107,10 @@
     return nil;
 }
 
+// =================================================================
+// Hàm kiểm tra đăng nhập
+//
+// =================================================================
 
 // Helper to check if user is authorized
 - (BOOL)isAuthorized {
@@ -82,31 +118,7 @@
 }
 
 // Creates the auth controller for authorizing access to YouTube.
-- (GTMOAuth2ViewControllerTouch *)createAuthController
-{
-    GTMOAuth2ViewControllerTouch *authController;
-    
-    authController = [[GTMOAuth2ViewControllerTouch alloc] initWithScope:kGTLAuthScopeYouTube
-                                                                clientID:kClientID
-                                                            clientSecret:kClientSecret
-                                                        keychainItemName:kKeychainItemName
-                                                                delegate:self
-                                                        finishedSelector:@selector(viewController:finishedWithAuth:error:)];
-    return authController;
-}
 
-// Handle completion of the authorization process, and updates the YouTube service
-// with the new credentials.
-- (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
-      finishedWithAuth:(GTMOAuth2Authentication *)authResult
-                 error:(NSError *)error {
-    if (error != nil) {
-        [Utils showAlert:@"Authentication Error" message:error.localizedDescription];
-        self.youtubeService.authorizer = nil;
-    } else {
-        self.youtubeService.authorizer = authResult;
-    }
-}
 
 - (id)init {
     if (self = [super init]) {

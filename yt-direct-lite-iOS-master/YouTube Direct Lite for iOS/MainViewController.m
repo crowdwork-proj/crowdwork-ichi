@@ -18,6 +18,7 @@
 #import "UploadController.h"
 #import "VideoListViewController.h"
 #import "Utils.h"
+#import "YouTubeAPILibs.h"
 
 
 @implementation MainViewController
@@ -37,15 +38,17 @@
   [super viewDidLoad];
 
   // Initialize the youtube service & load existing credentials from the keychain if available
-  self.youtubeService = [[GTLServiceYouTube alloc] init];
-  self.youtubeService.authorizer =
-      [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
-                                                            clientID:kClientID
-                                                        clientSecret:kClientSecret];
-  if (![self isAuthorized]) {
-    // Not yet authorized, request authorization and push the login UI onto the navigation stack.
-    [[self navigationController] pushViewController:[self createAuthController] animated:YES];
-  }
+//  self.youtubeService = [[GTLServiceYouTube alloc] init];
+//  self.youtubeService.authorizer =
+//      [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
+//                                                            clientID:kClientID
+//                                                        clientSecret:kClientSecret];
+//  if (![self isAuthorized]) {
+//    // Not yet authorized, request authorization and push the login UI onto the navigation stack.
+//    [[self navigationController] pushViewController:[self createAuthController] animated:YES];
+//  }
+    
+    [[YouTubeAPILibs sharedManager] showMyListVideo];
 }
 
 

@@ -40,7 +40,7 @@
 // =================================================================
 // Thực hiện login vào Youtube, dùng cơ chế OAuth của nó để xác thực
 // =================================================================
-- (void)doLogin;
+- (void)doLoginWithViewController:(UIViewController *) viewController;
 // =================================================================
 // 動画一覧
 // Hiển thị các list video của người dùng
