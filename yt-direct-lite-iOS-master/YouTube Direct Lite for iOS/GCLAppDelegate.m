@@ -25,7 +25,7 @@
     
     // gọi thử api 
     [[YouTubeAPILibs sharedManager] doLoginWithViewController: viewController];
-    [[YouTubeAPILibs sharedManager] showMyListVideo];
+    //[[YouTubeAPILibs sharedManager] showMyListVideo];
     
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
