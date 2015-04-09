@@ -1,4 +1,4 @@
-//
+    //
 //  YouTubeAPILibs.m
 //  YouTube Direct Lite for iOS
 //
@@ -12,7 +12,7 @@
 #import "UploadController.h"
 #import "VideoListViewController.h"
 #import "Utils.h"
-
+static const CGFloat kCropDimension = 44;
 @implementation YouTubeAPILibs
 
 @synthesize youtubeService;
@@ -44,9 +44,13 @@
                                                       clientSecret:kClientSecret];
     if (![self isAuthorized]) {
         // Not yet authorized, request authorization and push the login UI onto the navigation stack.
-        
         [[viewController navigationController] pushViewController:[self createAuthController] animated:YES];
     }
+}
+
+/// Helper to check if user is authorized
+- (BOOL)isAuthorized {
+    return [((GTMOAuth2Authentication *)self.youtubeService.authorizer) canAuthorize];
 }
 
 // Creates the auth controller for authorizing access to YouTube.
@@ -76,54 +80,143 @@
     }
 }
 
-
-
-// =================================================================
-// 動画一覧
-// Hiển thị các list video của người dùng
-// Anh viết mẫu chứ chưa chạy đâu
-// =================================================================
-
-- (NSString*)showMyListVideo
+- (NSMutableArray*)showMyListVideo
 {
-    self.youtubeService = [[GTLServiceYouTube alloc] init];
-    self.youtubeService.authorizer =
-    [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
-                                                          clientID:kClientID
-                                                      clientSecret:kClientSecret];
+    // Construct query
+    GTLQueryYouTube *channelsListQuery = [GTLQueryYouTube
+                                          
+                                          queryForChannelsListWithPart:@"contentDetails"];
     
-    GTLQueryYouTube *query = [GTLQueryYouTube queryForPlaylistsListWithPart:@"id, snippet, contentDetails"];
-    [self.youtubeService executeQuery:query completionHandler:^(GTLServiceTicket *ticket, id object, NSError *error) {
-        if (!error) {
-            GTLYouTubePlaylistListResponse *items = object;
-            for (GTLYouTubePlaylist * item in items) {
-                NSLog(@"------%@",item);
+    channelsListQuery.mine = YES;
+    
+    // This callback uses the block syntax
+    
+    [self.youtubeService executeQuery:channelsListQuery
+     
+        completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
+                            
+                            *response, NSError *error) {
+            
+            if (error) {
+                //[self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                return;
             }
             
-        } else {
-            NSLog(@"%@", error);
-        }
-    }];
+            NSLog(@"Finished API call");
+            
+            if ([[response items] count] > 0) {
+                
+                GTLYouTubeChannel *channel = response[0];
+                
+                NSString *uploadsPlaylistId =
+                
+                channel.contentDetails.relatedPlaylists.uploads;
+                
+                GTLQueryYouTube *playlistItemsListQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"contentDetails"];
+                playlistItemsListQuery.maxResults = 20l;
+                playlistItemsListQuery.playlistId = uploadsPlaylistId;
+                
+                // This callback uses the block syntax
+                
+                [self.youtubeService executeQuery:playlistItemsListQuery
+                 
+                    completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse
+                                        
+                                        *response, NSError *error) {
+                        
+                        if (error) {
+                            //[self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                            return;
+                        }
+                        
+                        NSLog(@"Finished API call");
+                        
+                        NSMutableArray *videoIds = [NSMutableArray arrayWithCapacity:response.items.count];
+                        
+                        for (GTLYouTubePlaylistItem *playlistItem in response.items) {
+                            
+                            [videoIds addObject:playlistItem.contentDetails.videoId];
+                            
+                        }
+                        
+                        GTLQueryYouTube *videosListQuery = [GTLQueryYouTube queryForVideosListWithPart:@"id,contentDetails,snippet,status,statistics"];
+                        videosListQuery.identifier = [videoIds componentsJoinedByString: @","];
+                        
+                        
+                        [self.youtubeService executeQuery:videosListQuery
+                         
+                            completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeVideoListResponse
+                                                
+                                                *response, NSError *error) {
+                                if (error) {
+                                    //[self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                                    return;
+                                }
+                                
+                                NSLog(@"Finished API call");
+                                NSMutableArray *videos = [NSMutableArray arrayWithCapacity:response.items.count];
+                                VideoData *vData;
+                                
+                                for (GTLYouTubeVideo *video in response.items){
+                                    if ([@"public" isEqualToString:video.status.privacyStatus]){
+                                        NSLog(@"----video:%@",video);
+                                        vData = [VideoData alloc];
+                                        vData.video = video;
+                                        [videos addObject:vData];
+                                    }
+                                }
+                                
+                                // Schedule an async job to fetch the image data for each result and
+                                // resize the large image in to a smaller thumbnail.
+                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                                    NSMutableArray *removeThese = [NSMutableArray array];
+                                    
+                                    for (VideoData *vData in videos) {
+                                        // Fetch synchronously the full sized image.
+                                        NSURL *url = [NSURL URLWithString:vData.getThumbUri];
+                                        NSData *imageData = [NSData dataWithContentsOfURL:url];
+                                        UIImage *image = [UIImage imageWithData:imageData];
+                                        if (!image) {
+                                            [removeThese addObject:vData];
+                                            continue;
+                                        }
+                                        vData.fullImage = image;
+                                        // Create a thumbnail from the fullsized image.
+                                        UIGraphicsBeginImageContext(CGSizeMake(kCropDimension,
+                                                                               kCropDimension));
+                                        [image drawInRect:
+                                         CGRectMake(0, 0, kCropDimension, kCropDimension)];
+                                        vData.thumbnail = UIGraphicsGetImageFromCurrentImageContext();
+                                        UIGraphicsEndImageContext();
+                                    }
+                                    
+                                    // Remove images that has no image data.
+                                    [videos removeObjectsInArray:removeThese];
+                                    
+                                    // Once all the images have been fetched and cached, call
+                                    // our delegate on the main thread.
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        //[self.delegate getYouTubeUploads:self
+                                        //            didFinishWithResults:videos];
+                                        NSLog(@"video data %@",videos);
+                                        for (int i =0 ; i < [videos count]; i++) {
+                                            VideoData *data = [videos objectAtIndex:i];
+                                            NSLog(@"=====================================\n");
+                                            NSLog(@" thumbnail data [%@] \n",data.thumbnail);
+                                            NSLog(@" title          [%@] \n",[data getTitle]);
+                                            NSLog(@" view           [%@] \n",data.getViews);
+                                            NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
+                                            NSLog(@"=====================================\n");
+                                        }
+                                    });
+                                });
+                                
+                            }];
+                    }];
+            }
+        }];
+    
     return nil;
 }
 
-// =================================================================
-// Hàm kiểm tra đăng nhập
-//
-// =================================================================
-
-// Helper to check if user is authorized
-- (BOOL)isAuthorized {
-    return [((GTMOAuth2Authentication *)self.youtubeService.authorizer) canAuthorize];
-}
-
-// Creates the auth controller for authorizing access to YouTube.
-
-
-- (id)init {
-    if (self = [super init]) {
-        
-    }
-    return self;
-}
 @end

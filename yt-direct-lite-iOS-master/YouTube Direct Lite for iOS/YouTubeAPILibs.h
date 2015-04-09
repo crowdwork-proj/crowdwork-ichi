@@ -10,10 +10,14 @@
 #import "GTLYouTube.h"
 #import "VideoData.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "GTLYouTube.h"
+#import "YouTubeGetUploads.h"
+#import "YouTubeUploadVideo.h"
 
-@interface YouTubeAPILibs : NSObject
+@interface YouTubeAPILibs : NSObject<YouTubeGetUploadsDelegate>
 
 @property (nonatomic, retain) GTLServiceYouTube *youtubeService;
+@property(nonatomic, strong)  YouTubeGetUploads *getUploads;
 
 + (id)sharedManager;
 
@@ -45,7 +49,7 @@
 // 動画一覧
 // Hiển thị các list video của người dùng
 // =================================================================
-- (NSString*)showMyListVideo;
+- (NSMutableArray*)showMyListVideo;
 // =================================================================
 // チャンネル
 // Hiển thị các kênh của người dùng

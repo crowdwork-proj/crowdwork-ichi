@@ -17,15 +17,15 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    // File chạy ví dụ
-    MainViewController *viewController = [[MainViewController alloc] init];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    UIViewController *viewController = [[UIViewController alloc]init];
+    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:viewController];
     navController.toolbarHidden = NO;
     [[self window] setRootViewController:navController];
     
-    // gọi thử api 
+    // Do Login
     [[YouTubeAPILibs sharedManager] doLoginWithViewController: viewController];
-    //[[YouTubeAPILibs sharedManager] showMyListVideo];
+    // Get List My Video
+    [[YouTubeAPILibs sharedManager] showMyListVideo];
     
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
