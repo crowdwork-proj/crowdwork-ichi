@@ -48,7 +48,7 @@
 //    [[self navigationController] pushViewController:[self createAuthController] animated:YES];
 //  }
     
-    [[YouTubeAPILibs sharedManager] showMyListVideo];
+    [[YouTubeAPILibs sharedManager] getAll];
 }
 
 
