@@ -26,10 +26,12 @@
     [[YouTubeAPILibs sharedManager] doLoginWithViewController: viewController];
     // Get List My Video
     [[YouTubeAPILibs sharedManager] showMyListVideo];
-    
+    // Get All
+    [[YouTubeAPILibs sharedManager] getAll];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

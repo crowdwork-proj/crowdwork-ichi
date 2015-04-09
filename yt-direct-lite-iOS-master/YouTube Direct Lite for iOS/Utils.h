@@ -11,10 +11,10 @@
 static NSString *const DEFAULT_KEYWORD = @"ytdl";
 static NSString *const UPLOAD_PLAYLIST = @"Replace me with the playlist ID you want to upload into";
 
-static NSString *const kClientID = @"929125236213-plssplid2854vjad57ku7qjv49r0olne.apps.googleusercontent.com";
-static NSString *const kClientSecret = @"mkoPatJIFEUA7-9lMz0JCPls";
+static NSString *const kClientID = @"123907724495-ve9pcqkdge3pci7ngtdgfn5iismcfebu.apps.googleusercontent.com";
+static NSString *const kClientSecret = @"M9YaEZfiquZKjn7OquG2kn0r";
 
-static NSString *const kKeychainItemName = @"YouTube Direct Lite";
+static NSString *const kKeychainItemName = @"Youtube";
 
 @interface Utils : NSObject
 

@@ -80,6 +80,89 @@ static const CGFloat kCropDimension = 44;
     }
 }
 
+- (void)getAll
+{
+    
+    GTLQueryYouTube *query;
+    
+    query = [GTLQueryYouTube queryForGuideCategoriesListWithPart:@"snippet"];
+    query.regionCode = @"US";
+    query.hl = @"en-US";
+    
+    
+    //__block NSMutableArray *blockVideos = self.videos;
+    
+    // let's get the categories
+    [self.youtubeService executeQuery:query completionHandler:^(GTLServiceTicket *blockTicket, GTLYouTubeGuideCategoryListResponse *list, NSError *error) {
+        
+        GTLYouTubeGuideCategory *cat = [list.items objectAtIndex:0];
+        
+        GTLQueryYouTube *channelsQuery = [GTLQueryYouTube queryForChannelsListWithPart:@"id,snippet"];
+        channelsQuery.categoryId = cat.identifier;
+        channelsQuery.maxResults = 10; // only need one, but maxresults = 1 is slower than 10
+        
+        
+        // let's get the channels for the given category
+        __unused GTLServiceTicket *channelsTicket = [self.youtubeService executeQuery:channelsQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse *channelList, NSError *videoError) {
+            
+            // we are only interested in one channel: the best of the best
+            [channelList.items enumerateObjectsUsingBlock:^(GTLYouTubeChannel *channel, NSUInteger idx, BOOL *stop) {
+                
+                if( [channel.snippet.title isEqualToString:@"Popular on YouTube - Worldwide"] )
+                {
+                    // get related playlists for our channel
+                    
+                    GTLQueryYouTube *playlistsQuery = [GTLQueryYouTube queryForPlaylistsListWithPart:@"id,snippet"];
+                    playlistsQuery.channelId = channel.identifier;
+                    playlistsQuery.maxResults = 20;
+                    
+                    __unused GTLServiceTicket *playlistsTicket = [self.youtubeService executeQuery:playlistsQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistListResponse *playlistsResponse, NSError *error) {
+                        
+                        // list of related playlists: only 1
+                        [playlistsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylistItem *playlist, NSUInteger idx, BOOL *stop) {
+                            NSLog(@"obj: %@", playlist.identifier);
+                            
+                            GTLQueryYouTube *videosQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"id,snippet"];
+                            videosQuery.playlistId = playlist.identifier;
+                            videosQuery.maxResults = 20;
+                            
+                            __unused GTLServiceTicket *videosTicket = [self.youtubeService executeQuery:videosQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse *playlistItemsResponse, NSError *error) {
+                                
+                                
+                                [playlistItemsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylistItem *playlistItem, NSUInteger idx, BOOL *stop) {
+                                    GTLYouTubeVideo *video = (GTLYouTubeVideo *)playlistItem.snippet.resourceId;
+                                    NSString *videoTitle = playlistItem.snippet.title;
+                                    NSString *videoId = [video.JSON valueForKey:@"videoId"];
+                                    
+                                    NSLog(@"videoid: %@", videoId);
+                                    NSLog(@"title: %@", videoTitle);
+                                    
+                                    
+                                    //[blockVideos addObject:@{@"title":videoTitle,@"identifier":videoId}];
+                                }];
+                                
+                                //[self.tableView reloadData];
+                                
+                            }];
+                        }];
+                    }];
+                    
+                    return;
+                }
+                
+            }];
+        }];
+    }];
+    
+    
+}
+
+
+// =================================================================
+// 動画一覧
+// Hiển thị các list video của người dùng
+// Anh viết mẫu chứ chưa chạy đâu
+// =================================================================
 - (NSMutableArray*)showMyListVideo
 {
     // Construct query

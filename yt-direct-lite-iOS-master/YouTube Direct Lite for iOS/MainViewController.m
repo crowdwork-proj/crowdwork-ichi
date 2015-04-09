@@ -47,8 +47,6 @@
     // Not yet authorized, request authorization and push the login UI onto the navigation stack.
     [[self navigationController] pushViewController:[self createAuthController] animated:YES];
   }
-    
-    //ß[[YouTubeAPILibs sharedManager] showMyListVideo];
 }
 
 
