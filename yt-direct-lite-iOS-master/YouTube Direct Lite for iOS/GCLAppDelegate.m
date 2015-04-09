@@ -8,7 +8,6 @@
 
 #import "GCLAppDelegate.h"
 #import "MainViewController.h"
-#import "YouTubeAPILibs.h"
 
 @implementation GCLAppDelegate
 
@@ -22,17 +21,30 @@
     navController.toolbarHidden = NO;
     [[self window] setRootViewController:navController];
     
-    // Do Login
-    [[YouTubeAPILibs sharedManager] doLoginWithViewController: viewController];
-    // Get List My Video
-    [[YouTubeAPILibs sharedManager] showMyListVideo];
-    // Get All
-    [[YouTubeAPILibs sharedManager] getAll];
+    YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
+    youtubeApiLibs.delegate = self;
+    [youtubeApiLibs doLoginWithViewController:viewController];
+    [youtubeApiLibs showMyListVideo];
+    
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
     return YES;
+}
+
+#pragma mark - YouTubeAPILibsDelegate methods
+- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads didFinishWithResults:(NSArray *)results {
+    NSLog(@"video data %@",results);
+    for (int i =0 ; i < [results count]; i++) {
+        VideoData *data = [results objectAtIndex:i];
+        NSLog(@"=====================================\n");
+        NSLog(@" thumbnail data [%@] \n",data.thumbnail);
+        NSLog(@" title          [%@] \n",[data getTitle]);
+        NSLog(@" view           [%@] \n",data.getViews);
+        NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
+        NSLog(@"=====================================\n");
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

@@ -163,7 +163,7 @@ static const CGFloat kCropDimension = 44;
 // Hiển thị các list video của người dùng
 // Anh viết mẫu chứ chưa chạy đâu
 // =================================================================
-- (NSMutableArray*)showMyListVideo
+- (void)showMyListVideo
 {
     // Construct query
     GTLQueryYouTube *channelsListQuery = [GTLQueryYouTube
@@ -173,7 +173,6 @@ static const CGFloat kCropDimension = 44;
     channelsListQuery.mine = YES;
     
     // This callback uses the block syntax
-    
     [self.youtubeService executeQuery:channelsListQuery
      
         completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
@@ -181,7 +180,9 @@ static const CGFloat kCropDimension = 44;
                             *response, NSError *error) {
             
             if (error) {
-                //[self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                /*==================Delegate=============*/
+                /*=======================================*/
+                [self.delegate getYouTubeUploads:self didFinishWithResults:nil];
                 return;
             }
             
@@ -208,7 +209,7 @@ static const CGFloat kCropDimension = 44;
                                         *response, NSError *error) {
                         
                         if (error) {
-                            //[self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                            [self.delegate getYouTubeUploads:self didFinishWithResults:nil];
                             return;
                         }
                         
@@ -232,7 +233,9 @@ static const CGFloat kCropDimension = 44;
                                                 
                                                 *response, NSError *error) {
                                 if (error) {
-                                    //[self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                                    /*==================Delegate=============*/
+                                    /*=======================================*/
+                                    [self.delegate getYouTubeUploads:self didFinishWithResults:nil];
                                     return;
                                 }
                                 
@@ -242,7 +245,6 @@ static const CGFloat kCropDimension = 44;
                                 
                                 for (GTLYouTubeVideo *video in response.items){
                                     if ([@"public" isEqualToString:video.status.privacyStatus]){
-                                        NSLog(@"----video:%@",video);
                                         vData = [VideoData alloc];
                                         vData.video = video;
                                         [videos addObject:vData];
@@ -279,18 +281,10 @@ static const CGFloat kCropDimension = 44;
                                     // Once all the images have been fetched and cached, call
                                     // our delegate on the main thread.
                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                        //[self.delegate getYouTubeUploads:self
-                                        //            didFinishWithResults:videos];
-                                        NSLog(@"video data %@",videos);
-                                        for (int i =0 ; i < [videos count]; i++) {
-                                            VideoData *data = [videos objectAtIndex:i];
-                                            NSLog(@"=====================================\n");
-                                            NSLog(@" thumbnail data [%@] \n",data.thumbnail);
-                                            NSLog(@" title          [%@] \n",[data getTitle]);
-                                            NSLog(@" view           [%@] \n",data.getViews);
-                                            NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
-                                            NSLog(@"=====================================\n");
-                                        }
+                                        /*==================Delegate=============*/
+                                        /*=======================================*/
+                                        [self.delegate getYouTubeUploads:self didFinishWithResults:videos];
+                                        return;
                                     });
                                 });
                                 
@@ -299,7 +293,7 @@ static const CGFloat kCropDimension = 44;
             }
         }];
     
-    return nil;
+    return;
 }
 
 @end

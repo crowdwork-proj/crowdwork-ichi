@@ -24,7 +24,6 @@
 
 // Delegate protocol for returning results from the Image Search API.
 @protocol YouTubeGetUploadsDelegate<NSObject>
-
 // Called when an image search completes. |results| will contain
 // an array of NSDictionary containing keys for @"fullImage", @"thumbnail",
 // @"author" and @"title".

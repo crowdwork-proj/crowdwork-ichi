@@ -14,25 +14,24 @@
 #import "YouTubeGetUploads.h"
 #import "YouTubeUploadVideo.h"
 
-@interface YouTubeAPILibs : NSObject<YouTubeGetUploadsDelegate>
+@protocol YouTubeAPILibsDelegate;
 
+@interface YouTubeAPILibs : NSObject
+
+@property(nonatomic, weak) id<YouTubeAPILibsDelegate> delegate;
 @property (nonatomic, retain) GTLServiceYouTube *youtubeService;
 @property(nonatomic, strong)  YouTubeGetUploads *getUploads;
 
 + (id)sharedManager;
 
 // link tham khảo
-
 // youtbue 3.0
 // https://developers.google.com/youtube/v3/docs/
-
 // các api liên quan
 // http://dev7dev.blogspot.jp/2014/07/videos-from-youtube-channel-in-ios-app.html
-
 // đối ứng việc hiển thị video ở bản Youtube API 3.0
 // https://developers.google.com/youtube/2.0/developers_guide_protocol_movies_and_shows?hl=ja
 // http://stackoverflow.com/questions/19725950/youtube-related-videos-using-youtube-v3-api
-
 
 // =================================================================
 // =================================================================
@@ -40,7 +39,6 @@
 //                 Các thư viện cần thực hiện                =======
 //                                                           =======
 // =================================================================
-
 // =================================================================
 // Thực hiện login vào Youtube, dùng cơ chế OAuth của nó để xác thực
 // =================================================================
@@ -50,7 +48,7 @@
 // Hiển thị các list video của người dùng
 // =================================================================
 - (void)getAll;
-- (NSMutableArray*)showMyListVideo;
+- (void)showMyListVideo;
 // =================================================================
 // チャンネル
 // Hiển thị các kênh của người dùng
@@ -81,8 +79,15 @@
 // Hiển thị các video , có thể người dùng thích xem, kiểu recomandation
 // =================================================================
 - (NSString*)showlistRecommendationVideo;
-
 // Hàm hỗ trợ
 - (BOOL)isAuthorized;
+@end
+
+@protocol YouTubeAPILibsDelegate<NSObject>
+
+- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads
+     didFinishWithResults:(NSArray *)results;
+/* Ứng với mỗi hàm thì add thêm một protocol để truyền dữ liệu cho người dùng khi gọi thư viện */
 
 @end
+

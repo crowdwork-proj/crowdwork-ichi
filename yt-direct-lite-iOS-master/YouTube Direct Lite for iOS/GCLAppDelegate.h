@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface GCLAppDelegate : UIResponder <UIApplicationDelegate>
+#import "YouTubeAPILibs.h"
+#import "Utils.h"
+@interface GCLAppDelegate : UIResponder <UIApplicationDelegate,YouTubeAPILibsDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
