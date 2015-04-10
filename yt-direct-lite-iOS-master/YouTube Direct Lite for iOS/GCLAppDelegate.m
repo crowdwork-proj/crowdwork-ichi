@@ -8,6 +8,7 @@
 
 #import "GCLAppDelegate.h"
 #import "MainViewController.h"
+#import "MyMainViewController.h"
 
 @implementation GCLAppDelegate
 
@@ -16,7 +17,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    UIViewController *viewController = [[UIViewController alloc]init];
+    MyMainViewController *viewController = [[MyMainViewController alloc]init];
     UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:viewController];
     navController.toolbarHidden = NO;
     [[self window] setRootViewController:navController];
@@ -25,6 +26,7 @@
     youtubeApiLibs.delegate = self;
     [youtubeApiLibs doLoginWithViewController:viewController];
     [youtubeApiLibs showMyListVideo];
+    [youtubeApiLibs getAll];
     
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
@@ -34,17 +36,20 @@
 }
 
 #pragma mark - YouTubeAPILibsDelegate methods
-- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads didFinishWithResults:(NSArray *)results {
-    NSLog(@"video data %@",results);
-    for (int i =0 ; i < [results count]; i++) {
-        VideoData *data = [results objectAtIndex:i];
-        NSLog(@"=====================================\n");
-        NSLog(@" thumbnail data [%@] \n",data.thumbnail);
-        NSLog(@" title          [%@] \n",[data getTitle]);
-        NSLog(@" view           [%@] \n",data.getViews);
-        NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
-        NSLog(@"=====================================\n");
+- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType)type didFinishWithResults:(NSArray *)results {
+    if (type == YTRequestTypeShowMyListVideo) {
+        NSLog(@"video data %@",results);
+        for (int i =0 ; i < [results count]; i++) {
+            VideoData *data = [results objectAtIndex:i];
+            NSLog(@"=====================================\n");
+            NSLog(@" thumbnail data [%@] \n",data.thumbnail);
+            NSLog(@" title          [%@] \n",[data getTitle]);
+            NSLog(@" view           [%@] \n",data.getViews);
+            NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
+            NSLog(@"=====================================\n");
+        }
     }
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

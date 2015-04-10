@@ -14,6 +14,14 @@
 #import "YouTubeGetUploads.h"
 #import "YouTubeUploadVideo.h"
 
+typedef NS_OPTIONS(NSUInteger, YTRequestType) {
+    YTRequestTypeShowMyListVideo = 1,
+    YTRequestTypeGetMyChanel = 2,
+    YTRequestTypeGetListLike = 3,
+    YTRequestTypeShowMyPlayList = 4
+    
+};
+
 @protocol YouTubeAPILibsDelegate;
 
 @interface YouTubeAPILibs : NSObject
@@ -23,6 +31,8 @@
 @property(nonatomic, strong)  YouTubeGetUploads *getUploads;
 
 + (id)sharedManager;
+
+
 
 // link tham khảo
 // youtbue 3.0
@@ -53,7 +63,7 @@
 // チャンネル
 // Hiển thị các kênh của người dùng
 // =================================================================
-- (NSString*)getMyChanel;
+- (void)getMyChanel;
 // =================================================================
 // お気に入る
 // Hiển thị các danh sách like video của người dùng
@@ -85,9 +95,10 @@
 
 @protocol YouTubeAPILibsDelegate<NSObject>
 
-- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads
+- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType) type
      didFinishWithResults:(NSArray *)results;
 /* Ứng với mỗi hàm thì add thêm một protocol để truyền dữ liệu cho người dùng khi gọi thư viện */
 
 @end
+
 

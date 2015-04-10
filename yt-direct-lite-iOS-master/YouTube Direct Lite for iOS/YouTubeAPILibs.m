@@ -108,6 +108,8 @@ static const CGFloat kCropDimension = 44;
             // we are only interested in one channel: the best of the best
             [channelList.items enumerateObjectsUsingBlock:^(GTLYouTubeChannel *channel, NSUInteger idx, BOOL *stop) {
                 
+                NSLog(@"channel: %@", channel.snippet.title);
+                
                 if( [channel.snippet.title isEqualToString:@"Popular on YouTube - Worldwide"] )
                 {
                     // get related playlists for our channel
@@ -182,7 +184,7 @@ static const CGFloat kCropDimension = 44;
             if (error) {
                 /*==================Delegate=============*/
                 /*=======================================*/
-                [self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
                 return;
             }
             
@@ -209,7 +211,7 @@ static const CGFloat kCropDimension = 44;
                                         *response, NSError *error) {
                         
                         if (error) {
-                            [self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
                             return;
                         }
                         
@@ -235,7 +237,7 @@ static const CGFloat kCropDimension = 44;
                                 if (error) {
                                     /*==================Delegate=============*/
                                     /*=======================================*/
-                                    [self.delegate getYouTubeUploads:self didFinishWithResults:nil];
+                                    [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
                                     return;
                                 }
                                 
@@ -283,7 +285,7 @@ static const CGFloat kCropDimension = 44;
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         /*==================Delegate=============*/
                                         /*=======================================*/
-                                        [self.delegate getYouTubeUploads:self didFinishWithResults:videos];
+                                        [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:videos];
                                         return;
                                     });
                                 });
@@ -294,6 +296,66 @@ static const CGFloat kCropDimension = 44;
         }];
     
     return;
+}
+
+// =================================================================
+// チャンネル
+// Hiển thị các kênh của người dùng
+// =================================================================
+- (void)getMyChanel {
+    
+    GTLQueryYouTube *query;
+    
+    query = [GTLQueryYouTube queryForGuideCategoriesListWithPart:@"snippet"];
+    query.regionCode = @"US";
+    query.hl = @"en-US";
+    
+    
+    //__block NSMutableArray *blockVideos = self.videos;
+    
+    // let's get the categories
+    [self.youtubeService executeQuery:query completionHandler:^(GTLServiceTicket *blockTicket, GTLYouTubeGuideCategoryListResponse *list, NSError *error) {
+        
+        if (error) {
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeGetMyChanel  didFinishWithResults:nil];
+            return;
+        }
+        
+        GTLYouTubeGuideCategory *cat = [list.items objectAtIndex:0];
+        
+        GTLQueryYouTube *channelsQuery = [GTLQueryYouTube queryForChannelsListWithPart:@"id,snippet"];
+        channelsQuery.categoryId = cat.identifier;
+        channelsQuery.maxResults = 10; // only need one, but maxresults = 1 is slower than 10
+        
+        
+        // let's get the channels for the given category
+        __unused GTLServiceTicket *channelsTicket = [self.youtubeService executeQuery:channelsQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse *channelList, NSError *videoError) {
+            
+            if (videoError) {
+                [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeGetMyChanel didFinishWithResults:nil];
+                return;
+            }
+            
+            NSMutableArray *chanels = [NSMutableArray arrayWithCapacity:channelList.items.count];
+            
+            // we are only interested in one channel: the best of the best
+            [channelList.items enumerateObjectsUsingBlock:^(GTLYouTubeChannel *channel, NSUInteger idx, BOOL *stop) {
+                
+                NSLog(@"channel: %@", channel.snippet.title);
+                [chanels addObject:channel];
+                
+                
+            }];
+            // our delegate on the main thread.
+            dispatch_async(dispatch_get_main_queue(), ^{
+                /*==================Delegate=============*/
+                /*=======================================*/
+                [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeGetMyChanel didFinishWithResults:chanels];
+                return;
+            });
+            
+        }];
+    }];
 }
 
 @end
