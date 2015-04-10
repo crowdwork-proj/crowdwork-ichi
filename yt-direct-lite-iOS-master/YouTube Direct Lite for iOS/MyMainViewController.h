@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YouTubeAPILibs.h"
+#import "Utils.h"
 
-@interface MyMainViewController : UIViewController
+@interface MyMainViewController : UIViewController <YouTubeAPILibsDelegate>
 
 @end

@@ -39,6 +39,7 @@
 		108CBEA8184025EF00AE232C /* GTLYouTube_Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = 108CBEA7184025EF00AE232C /* GTLYouTube_Sources.m */; };
 		108CBEAA1840261A00AE232C /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 108CBEA91840261A00AE232C /* GTMOAuth2ViewTouch.xib */; };
 		108CBEAF1840276900AE232C /* iframe-player.html in Resources */ = {isa = PBXBuildFile; fileRef = 108CBEAE1840276900AE232C /* iframe-player.html */; };
+		7E71D5E01AD7E2EA00E2A0DB /* CategoriesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E71D5DF1AD7E2EA00E2A0DB /* CategoriesTableViewController.m */; };
 		7EA904131AD686DC006C38BA /* YouTubeAPI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7EA904121AD686DC006C38BA /* YouTubeAPI.storyboard */; };
 		7EA904161AD6873F006C38BA /* MyMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA904151AD6873F006C38BA /* MyMainViewController.m */; };
 		7EA904191AD6886A006C38BA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA904181AD6886A006C38BA /* LoginViewController.m */; };
@@ -102,6 +103,8 @@
 		108CBEA7184025EF00AE232C /* GTLYouTube_Sources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLYouTube_Sources.m; path = "../../google-api-objectivec-client-read-only/Source/Services/YouTube/Generated/GTLYouTube_Sources.m"; sourceTree = "<group>"; };
 		108CBEA91840261A00AE232C /* GTMOAuth2ViewTouch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GTMOAuth2ViewTouch.xib; path = "../../google-api-objectivec-client-read-only/Source/OAuth2/Touch/GTMOAuth2ViewTouch.xib"; sourceTree = "<group>"; };
 		108CBEAE1840276900AE232C /* iframe-player.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "iframe-player.html"; sourceTree = "<group>"; };
+		7E71D5DE1AD7E2EA00E2A0DB /* CategoriesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesTableViewController.h; sourceTree = "<group>"; };
+		7E71D5DF1AD7E2EA00E2A0DB /* CategoriesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesTableViewController.m; sourceTree = "<group>"; };
 		7EA904121AD686DC006C38BA /* YouTubeAPI.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = YouTubeAPI.storyboard; sourceTree = "<group>"; };
 		7EA904141AD6873F006C38BA /* MyMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMainViewController.h; sourceTree = "<group>"; };
 		7EA904151AD6873F006C38BA /* MyMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMainViewController.m; sourceTree = "<group>"; };
@@ -255,6 +258,8 @@
 				7EA904151AD6873F006C38BA /* MyMainViewController.m */,
 				7EA904171AD6886A006C38BA /* LoginViewController.h */,
 				7EA904181AD6886A006C38BA /* LoginViewController.m */,
+				7E71D5DE1AD7E2EA00E2A0DB /* CategoriesTableViewController.h */,
+				7E71D5DF1AD7E2EA00E2A0DB /* CategoriesTableViewController.m */,
 			);
 			name = YouTubeAPI;
 			sourceTree = "<group>";
@@ -373,6 +378,7 @@
 				108CBEA8184025EF00AE232C /* GTLYouTube_Sources.m in Sources */,
 				0B42A1B51AD407C7004407BA /* YouTubeAPILibs.m in Sources */,
 				7EA904191AD6886A006C38BA /* LoginViewController.m in Sources */,
+				7E71D5E01AD7E2EA00E2A0DB /* CategoriesTableViewController.m in Sources */,
 				104DD736184024FD00ECD20B /* GTLCommon_Sources.m in Sources */,
 				104DD7231840249200ECD20B /* Utils.m in Sources */,
 				104DD6ED1840247B00ECD20B /* GCLAppDelegate.m in Sources */,

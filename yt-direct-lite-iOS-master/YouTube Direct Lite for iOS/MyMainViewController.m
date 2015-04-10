@@ -17,7 +17,98 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
+    youtubeApiLibs.delegate = self;
+    [youtubeApiLibs doLoginWithViewController:self];
+    //[youtubeApiLibs showMyListVideo];
+    //[youtubeApiLibs getAll];
+    
+    //Lấy tất cả các category từ yoututbe
+    [youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
 }
+
+#pragma mark - YouTubeAPILibsDelegate methods
+- (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType)type didFinishWithResults:(NSArray *)results {
+    if (type == YTRequestTypeShowMyListVideo) {
+        NSLog(@"video data %@",results);
+        for (int i =0 ; i < [results count]; i++) {
+            VideoData *data = [results objectAtIndex:i];
+            NSLog(@"=====================================\n");
+            NSLog(@" thumbnail data [%@] \n",data.thumbnail);
+            NSLog(@" title          [%@] \n",[data getTitle]);
+            NSLog(@" view           [%@] \n",data.getViews);
+            NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
+            NSLog(@"=====================================\n");
+        }
+    }
+    
+    //Đầu tiên là lấy hết categories về
+    if (type == YTRequestTypeCategories) {
+        NSLog(@"categories data %@",results);
+        for (int i =0 ; i < [results count]; i++) {
+            GTLYouTubeGuideCategory *data = [results objectAtIndex:i];
+            
+            NSLog(@"=====================================\n");
+            NSLog(@"CATEGORIES                           \n");
+            NSLog(@" title          [%@] \n",data.snippet.title);
+            NSLog(@" identifier     [%@] \n",[data identifier]);
+            NSLog(@"=====================================\n");
+            
+            //dùng identifier để lấy hết các kênh của 1 category
+            [[YouTubeAPILibs sharedManager] getChannelsWithCategoryIdentifier:data.identifier andMaxResults:1];
+        }
+    }
+    
+    
+    //Bước 2: lấy hết channels của 1 category nào đó
+    if (type == YTRequestTypeChannels) {
+        NSLog(@"chanels data %@",results);
+        for (int i =0 ; i < [results count]; i++) {
+            GTLYouTubeChannel *data = [results objectAtIndex:i];
+            
+            NSLog(@"=====================================\n");
+            NSLog(@"CHANNELS                             \n");
+            NSLog(@" title          [%@] \n",data.snippet.title);
+            NSLog(@" identifier     [%@] \n",[data identifier]);
+            NSLog(@"=====================================\n");
+            
+            //Mỗi channel có nhiều playlist, lấy hết nó về
+            [[YouTubeAPILibs sharedManager] getPlaylistsWithChannelIdentifier:data.identifier andMaxResults:1];
+        }
+    }
+    
+    //Bước 3: lấy hết playlist của 1 channel về
+    if (type == YTRequestTypePlaylists) {
+        NSLog(@"playlists data %@",results);
+        for (int i =0 ; i < [results count]; i++) {
+            GTLYouTubePlaylistItem *data = [results objectAtIndex:i];
+            NSLog(@"=====================================\n");
+            NSLog(@"PLAYLIST_LIST                        \n");
+            NSLog(@" title          [%@] \n",data.snippet.title);
+            NSLog(@" identifier     [%@] \n",[data identifier]);
+            NSLog(@"=====================================\n");
+            
+            //mỗi channel có nhiều videos, hãy lấy hết các video đó về
+            [[YouTubeAPILibs sharedManager] getVideosWithPlaylistIdentifier:data.identifier andMaxResults:1];
+        }
+    }
+    
+    //Bước 4: lấy hết videos của 1 playlist về
+    if (type == YTRequestTypeVideos) {
+        NSLog(@"playlist data %@",results);
+        for (int i =0 ; i < [results count]; i++) {
+            GTLYouTubePlaylistItem *data = [results objectAtIndex:i];
+            NSLog(@"=====================================\n");
+            NSLog(@"VIDEOS                               \n");
+            NSLog(@" title          [%@] \n",data.snippet.title);
+            NSLog(@" identifier     [%@] \n",[data identifier]);
+            NSLog(@"=====================================\n");
+        }
+    }
+    
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
