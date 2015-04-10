@@ -90,7 +90,6 @@
 
 - (void)showList {
   VideoListViewController *listUI = [[VideoListViewController alloc] init];
-  listUI.youtubeService = self.youtubeService;
   [[self navigationController] pushViewController:listUI animated:YES];
 }
 

@@ -7,6 +7,11 @@
 //
 
 #import "MyMainViewController.h"
+#import "ShowMyListVideoController.h"
+#import "VideoListViewController.h"
+#import "ChanelListViewController.h"
+#import "LikeListViewController.h"
+#import "MyMainViewController.h"
 
 @interface MyMainViewController ()
 
@@ -16,15 +21,61 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
-    YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
+    
+    /*YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
     youtubeApiLibs.delegate = self;
     [youtubeApiLibs doLoginWithViewController:self];
+    */
+    
     //[youtubeApiLibs showMyListVideo];
     //[youtubeApiLibs getAll];
     
     //Lấy tất cả các category từ yoututbe
-    [youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
+    //[youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    if ( [[YouTubeAPILibs sharedManager] isLogged ] == true ) {
+        loginButton.hidden = YES;
+    }
+}
+
+- (IBAction)onLogin:(id)sender
+{
+    YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
+    youtubeApiLibs.delegate = self;
+    [youtubeApiLibs doLoginWithViewController:self];
+}
+
+
+- (IBAction)doGetMyUpload:(id)sender
+{
+    VideoListViewController *videoListController = [[VideoListViewController alloc]init];
+    [self.navigationController  pushViewController:videoListController animated:YES];
+}
+
+- (IBAction)doGetMyChanel:(id)sender
+{
+    ChanelListViewController *chanelListViewController = [[ChanelListViewController alloc]init];
+    [self.navigationController pushViewController:chanelListViewController animated:YES];
+}
+
+- (IBAction)doGetListVideo:(id)sender
+{
+
+}
+
+- (IBAction)doGetListLike:(id)sender
+{
+    
+}
+
+- (IBAction)doGetMyPlayList:(id)sender
+{
+    
 }
 
 #pragma mark - YouTubeAPILibsDelegate methods

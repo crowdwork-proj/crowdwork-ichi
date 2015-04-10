@@ -48,6 +48,20 @@ static const CGFloat kCropDimension = 44;
     }
 }
 
+- (BOOL)isLogged {
+    
+    if (!self.youtubeService) {
+        self.youtubeService = [[GTLServiceYouTube alloc] init];
+        self.youtubeService.authorizer =
+        [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
+                                                              clientID:kClientID
+         
+                                                          clientSecret:kClientSecret];
+    }
+    
+    return [self isAuthorized];
+}
+
 /// Helper to check if user is authorized
 - (BOOL)isAuthorized {
     return [((GTMOAuth2Authentication *)self.youtubeService.authorizer) canAuthorize];

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="W8e-e7-ere">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="W8e-e7-ere">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
@@ -17,76 +17,74 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WNg-PO-T34">
-                                <rect key="frame" x="145" y="269" width="31" height="30"/>
-                                <state key="normal" title="start">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGm-9E-f7w">
+                                <rect key="frame" x="130" y="127" width="60" height="30"/>
+                                <state key="normal" title="ログイン">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="vcL-F3-B0x" kind="push" id="xB3-ag-6CS"/>
+                                    <action selector="onLogin:" destination="vm3-AC-r7l" eventType="touchUpInside" id="Sua-hM-B9I"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="90J-Yp-F7k">
+                                <rect key="frame" x="108" y="235" width="105" height="30"/>
+                                <state key="normal" title="マイチャンネル">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetMyChanel:" destination="vm3-AC-r7l" eventType="touchUpInside" id="5EM-Tq-Uu5"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5c5-D9-fnz">
+                                <rect key="frame" x="100" y="181" width="120" height="30"/>
+                                <state key="normal" title="マイアップロード">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetMyUpload:" destination="vm3-AC-r7l" eventType="touchUpInside" id="sss-Pf-x3g"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NpL-NC-IWo">
+                                <rect key="frame" x="130" y="286" width="60" height="30"/>
+                                <state key="normal" title="動画一覧">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetListVideo:" destination="vm3-AC-r7l" eventType="touchUpInside" id="feZ-EU-Vyn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nOt-kf-4iS">
+                                <rect key="frame" x="123" y="344" width="75" height="30"/>
+                                <state key="normal" title="お気に入る">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetListLike:" destination="vm3-AC-r7l" eventType="touchUpInside" id="7na-ng-o3L"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PU8-qD-kw4">
+                                <rect key="frame" x="115" y="397" width="90" height="30"/>
+                                <state key="normal" title="プレイリスト">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetMyPlayList:" destination="vm3-AC-r7l" eventType="touchUpInside" id="lCR-Lm-G1O"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="WNg-PO-T34" secondAttribute="centerX" id="6wF-42-G9L"/>
-                            <constraint firstAttribute="centerY" secondItem="WNg-PO-T34" secondAttribute="centerY" id="o49-vp-HHv"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gJV-46-HrM"/>
+                    <connections>
+                        <outlet property="getListLikeButton" destination="nOt-kf-4iS" id="4GY-KX-VYn"/>
+                        <outlet property="getListVideoButton" destination="NpL-NC-IWo" id="pNL-3x-DrW"/>
+                        <outlet property="getMyChanelButton" destination="90J-Yp-F7k" id="HDm-Ph-j41"/>
+                        <outlet property="getMyPlaylistButton" destination="PU8-qD-kw4" id="MIN-7G-QJF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J4w-Aa-0be" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="581" y="177.99999999999997"/>
-        </scene>
-        <!--LOGIN-->
-        <scene sceneID="tDp-ee-7XN">
-            <objects>
-                <viewController id="vcL-F3-B0x" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Mwg-c4-BNg"/>
-                        <viewControllerLayoutGuide type="bottom" id="3su-9F-s9D"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="tuN-bm-BBB">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="LOGIN" id="5lb-fk-PKC"/>
-                    <connections>
-                        <segue destination="RzV-KZ-vow" kind="push" identifier="CategoriesTable" id="scx-oO-qno"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="98k-dH-oZO" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="954" y="177.99999999999997"/>
-        </scene>
-        <!--Categories-->
-        <scene sceneID="DO2-eF-rab">
-            <objects>
-                <tableViewController storyboardIdentifier="CategoriesTable" id="RzV-KZ-vow" customClass="CategoriesTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="t6u-t4-MJf">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="zo1-JQ-M5Y">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zo1-JQ-M5Y" id="CsR-56-ZDA">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="RzV-KZ-vow" id="0Av-kB-TJd"/>
-                            <outlet property="delegate" destination="RzV-KZ-vow" id="vWd-G1-J63"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Categories" id="NVn-PA-cBa"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZXL-WX-PT6" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1386" y="177"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="1VJ-OZ-qih">

@@ -11,5 +11,21 @@
 #import "Utils.h"
 
 @interface MyMainViewController : UIViewController <YouTubeAPILibsDelegate>
+{
+    IBOutlet UIButton *loginButton;
+    IBOutlet UIButton *getMyUploadButton;
+    IBOutlet UIButton *getMyChanelButton;
+    IBOutlet UIButton *getListVideoButton;
+    IBOutlet UIButton *getListLikeButton;
+    IBOutlet UIButton *getMyPlaylistButton;
+    
+}
+
+- (IBAction)onLogin:(id)sender;
+- (IBAction)doGetMyUpload:(id)sender;
+- (IBAction)doGetMyChanel:(id)sender;
+- (IBAction)doGetListVideo:(id)sender;
+- (IBAction)doGetListLike:(id)sender;
+- (IBAction)doGetMyPlayList:(id)sender;
 
 @end

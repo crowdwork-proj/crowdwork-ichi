@@ -46,6 +46,7 @@
         }
     }
     
+    
     //Đầu tiên là lấy hết categories về
     if (type == YTRequestTypeCategories) {
         NSLog(@"categories data %@",results);
