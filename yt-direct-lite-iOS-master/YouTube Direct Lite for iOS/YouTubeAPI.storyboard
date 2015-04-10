@@ -17,24 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGm-9E-f7w">
-                                <rect key="frame" x="130" y="127" width="60" height="30"/>
-                                <state key="normal" title="ログイン">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="onLogin:" destination="vm3-AC-r7l" eventType="touchUpInside" id="Sua-hM-B9I"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="90J-Yp-F7k">
-                                <rect key="frame" x="108" y="235" width="105" height="30"/>
-                                <state key="normal" title="マイチャンネル">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="doGetMyChanel:" destination="vm3-AC-r7l" eventType="touchUpInside" id="5EM-Tq-Uu5"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5c5-D9-fnz">
                                 <rect key="frame" x="100" y="181" width="120" height="30"/>
                                 <state key="normal" title="マイアップロード">
@@ -44,17 +26,8 @@
                                     <action selector="doGetMyUpload:" destination="vm3-AC-r7l" eventType="touchUpInside" id="sss-Pf-x3g"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NpL-NC-IWo">
-                                <rect key="frame" x="130" y="286" width="60" height="30"/>
-                                <state key="normal" title="動画一覧">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="doGetListVideo:" destination="vm3-AC-r7l" eventType="touchUpInside" id="feZ-EU-Vyn"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nOt-kf-4iS">
-                                <rect key="frame" x="123" y="344" width="75" height="30"/>
+                                <rect key="frame" x="123" y="236" width="75" height="30"/>
                                 <state key="normal" title="お気に入る">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -63,12 +36,48 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PU8-qD-kw4">
-                                <rect key="frame" x="115" y="397" width="90" height="30"/>
+                                <rect key="frame" x="115" y="289" width="90" height="30"/>
                                 <state key="normal" title="プレイリスト">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="doGetMyPlayList:" destination="vm3-AC-r7l" eventType="touchUpInside" id="lCR-Lm-G1O"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGm-9E-f7w">
+                                <rect key="frame" x="130" y="127" width="60" height="30"/>
+                                <state key="normal" title="ログイン">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="onLogin:" destination="vm3-AC-r7l" eventType="touchUpInside" id="Sua-hM-B9I"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zAg-C5-5aI">
+                                <rect key="frame" x="130" y="342" width="60" height="30"/>
+                                <state key="normal" title="後で見る">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doViewAfter:" destination="vm3-AC-r7l" eventType="touchUpInside" id="EQO-Xh-cZe"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="90J-Yp-F7k">
+                                <rect key="frame" x="108" y="444" width="105" height="30"/>
+                                <state key="normal" title="マイチャンネル">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetMyChanel:" destination="vm3-AC-r7l" eventType="touchUpInside" id="5EM-Tq-Uu5"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NpL-NC-IWo">
+                                <rect key="frame" x="130" y="393" width="60" height="30"/>
+                                <state key="normal" title="動画一覧">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doGetListVideo:" destination="vm3-AC-r7l" eventType="touchUpInside" id="feZ-EU-Vyn"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -80,6 +89,7 @@
                         <outlet property="getListVideoButton" destination="NpL-NC-IWo" id="pNL-3x-DrW"/>
                         <outlet property="getMyChanelButton" destination="90J-Yp-F7k" id="HDm-Ph-j41"/>
                         <outlet property="getMyPlaylistButton" destination="PU8-qD-kw4" id="MIN-7G-QJF"/>
+                        <outlet property="viewAfterButton" destination="zAg-C5-5aI" id="GtP-xy-zkO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J4w-Aa-0be" userLabel="First Responder" sceneMemberID="firstResponder"/>

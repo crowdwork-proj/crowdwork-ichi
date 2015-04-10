@@ -11,6 +11,8 @@
 #import "VideoListViewController.h"
 #import "ChanelListViewController.h"
 #import "LikeListViewController.h"
+#import "MyPlayListViewController.h"
+#import "ViewAfterListViewController.h"
 #import "MyMainViewController.h"
 
 @interface MyMainViewController ()
@@ -33,7 +35,7 @@
     //[youtubeApiLibs getAll];
     
     //Lấy tất cả các category từ yoututbe
-    //[youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -48,6 +50,8 @@
     YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
     youtubeApiLibs.delegate = self;
     [youtubeApiLibs doLoginWithViewController:self];
+    
+    [youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
 }
 
 
@@ -68,14 +72,22 @@
 
 }
 
+- (IBAction)doViewAfter:(id)sender
+{
+    ViewAfterListViewController *viewAfterViewController = [[ViewAfterListViewController alloc]init];
+    [self.navigationController pushViewController:viewAfterViewController animated:YES];
+}
+
 - (IBAction)doGetListLike:(id)sender
 {
-    
+    LikeListViewController *liveViewController = [[LikeListViewController alloc]init];
+    [self.navigationController pushViewController:liveViewController animated:YES];
 }
 
 - (IBAction)doGetMyPlayList:(id)sender
 {
-    
+    MyPlayListViewController *playListViewController = [[MyPlayListViewController alloc]init];
+    [self.navigationController pushViewController:playListViewController animated:YES];
 }
 
 #pragma mark - YouTubeAPILibsDelegate methods

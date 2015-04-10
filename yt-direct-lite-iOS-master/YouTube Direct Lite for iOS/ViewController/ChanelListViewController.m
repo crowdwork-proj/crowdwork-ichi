@@ -36,18 +36,18 @@
 - (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType) type
      didFinishWithResults:(NSArray *)results{
     
-    if (type == YTRequestTypeShowMyListVideo) {
-        NSLog(@"video data %@",results);
+    if (type == YTRequestTypeGetMyChanel) {
+        
         for (int i =0 ; i < [results count]; i++) {
-            VideoData *data = [results objectAtIndex:i];
-            NSLog(@"=====================================\n");
-            NSLog(@" thumbnail data [%@] \n",data.thumbnail);
-            NSLog(@" title          [%@] \n",[data getTitle]);
-            NSLog(@" view           [%@] \n",data.getViews);
-            NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
-            NSLog(@"=====================================\n");
+            //VideoData *data = [results objectAtIndex:i];
+            //NSLog(@"=====================================\n");
+            //NSLog(@" thumbnail data [%@] \n",data.thumbnail);
+            //NSLog(@" title          [%@] \n",[data getTitle]);
+            //NSLog(@" view           [%@] \n",data.getViews);
+            //NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
+            //NSLog(@"=====================================\n");
         }
-        self.videos = results;
+        //self.videos = results;
     }
     
     [self.tableView reloadData];

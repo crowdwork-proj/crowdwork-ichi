@@ -1,11 +1,11 @@
-#import "LikeListViewController.h"
+#import "ViewAfterListViewController.h"
 #import "VideoData.h"
 #import "GTLYouTube.h"
 #import "VideoPlayerViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Utils.h"
 
-@implementation LikeListViewController
+@implementation ViewAfterListViewController
 
 - (id)init {
   self = [super init];
@@ -28,7 +28,7 @@
     
   YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
   youtubeApiLibs.delegate = self;
-  [youtubeApiLibs getListLike];
+  [youtubeApiLibs showListVideoViewLater];
 
 }
 

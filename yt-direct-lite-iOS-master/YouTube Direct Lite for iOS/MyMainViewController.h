@@ -18,6 +18,7 @@
     IBOutlet UIButton *getListVideoButton;
     IBOutlet UIButton *getListLikeButton;
     IBOutlet UIButton *getMyPlaylistButton;
+    IBOutlet UIButton *viewAfterButton;
     
 }
 
@@ -27,5 +28,6 @@
 - (IBAction)doGetListVideo:(id)sender;
 - (IBAction)doGetListLike:(id)sender;
 - (IBAction)doGetMyPlayList:(id)sender;
+- (IBAction)doViewAfter:(id)sender;
 
 @end

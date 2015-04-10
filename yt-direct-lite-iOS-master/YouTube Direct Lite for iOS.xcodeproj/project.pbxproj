@@ -11,6 +11,7 @@
 		0B2AF6211AD816B000015AEF /* ChanelListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF61C1AD816B000015AEF /* ChanelListViewController.m */; };
 		0B2AF6221AD816B000015AEF /* LikeListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF61E1AD816B000015AEF /* LikeListViewController.m */; };
 		0B2AF6231AD816B000015AEF /* MyPlayListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF6201AD816B000015AEF /* MyPlayListViewController.m */; };
+		0B2AF6271AD82F7300015AEF /* ViewAfterListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF6261AD82F7300015AEF /* ViewAfterListViewController.m */; };
 		0B42A1B51AD407C7004407BA /* YouTubeAPILibs.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B42A1B41AD407C7004407BA /* YouTubeAPILibs.m */; };
 		104DD6DD1840247B00ECD20B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 104DD6DC1840247B00ECD20B /* Foundation.framework */; };
 		104DD6DF1840247B00ECD20B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 104DD6DE1840247B00ECD20B /* CoreGraphics.framework */; };
@@ -67,6 +68,8 @@
 		0B2AF61E1AD816B000015AEF /* LikeListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeListViewController.m; sourceTree = "<group>"; };
 		0B2AF61F1AD816B000015AEF /* MyPlayListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPlayListViewController.h; sourceTree = "<group>"; };
 		0B2AF6201AD816B000015AEF /* MyPlayListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPlayListViewController.m; sourceTree = "<group>"; };
+		0B2AF6251AD82F7300015AEF /* ViewAfterListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewAfterListViewController.h; sourceTree = "<group>"; };
+		0B2AF6261AD82F7300015AEF /* ViewAfterListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewAfterListViewController.m; sourceTree = "<group>"; };
 		0B42A1B31AD407C7004407BA /* YouTubeAPILibs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeAPILibs.h; sourceTree = "<group>"; };
 		0B42A1B41AD407C7004407BA /* YouTubeAPILibs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YouTubeAPILibs.m; sourceTree = "<group>"; };
 		104DD6D91840247B00ECD20B /* YouTube Direct Lite for iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "YouTube Direct Lite for iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -152,6 +155,8 @@
 		0B2AF60F1AD8094A00015AEF /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				0B2AF6251AD82F7300015AEF /* ViewAfterListViewController.h */,
+				0B2AF6261AD82F7300015AEF /* ViewAfterListViewController.m */,
 				0B2AF61B1AD816B000015AEF /* ChanelListViewController.h */,
 				0B2AF61C1AD816B000015AEF /* ChanelListViewController.m */,
 				0B2AF61D1AD816B000015AEF /* LikeListViewController.h */,
@@ -393,6 +398,7 @@
 				0B2AF6221AD816B000015AEF /* LikeListViewController.m in Sources */,
 				104DD737184024FD00ECD20B /* GTLNetworking_Sources.m in Sources */,
 				104DD7241840249200ECD20B /* VideoData.m in Sources */,
+				0B2AF6271AD82F7300015AEF /* ViewAfterListViewController.m in Sources */,
 				7EA904161AD6873F006C38BA /* MyMainViewController.m in Sources */,
 				104DD7211840249200ECD20B /* MainViewController.m in Sources */,
 				0B2AF6211AD816B000015AEF /* ChanelListViewController.m in Sources */,

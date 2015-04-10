@@ -2,6 +2,7 @@
 #import "VideoData.h"
 #import "GTLYouTube.h"
 #import "VideoPlayerViewController.h"
+
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Utils.h"
 
@@ -28,7 +29,7 @@
     
   YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
   youtubeApiLibs.delegate = self;
-  [youtubeApiLibs showMyListVideo];
+  [youtubeApiLibs showMyPlaylist];
 
 }
 
