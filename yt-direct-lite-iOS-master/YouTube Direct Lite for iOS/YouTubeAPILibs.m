@@ -96,6 +96,7 @@ static const CGFloat kCropDimension = 44;
     [self.youtubeService executeQuery:query completionHandler:^(GTLServiceTicket *blockTicket, GTLYouTubeGuideCategoryListResponse *list, NSError *error) {
         
         GTLYouTubeGuideCategory *cat = [list.items objectAtIndex:0];
+        NSLog(@"Guilde Category: %@",list);
         
         GTLQueryYouTube *channelsQuery = [GTLQueryYouTube queryForChannelsListWithPart:@"id,snippet"];
         channelsQuery.categoryId = cat.identifier;
@@ -110,7 +111,7 @@ static const CGFloat kCropDimension = 44;
                 
                 NSLog(@"channel: %@", channel.snippet.title);
                 
-                if( [channel.snippet.title isEqualToString:@"Popular on YouTube - Worldwide"] )
+                if( [channel.snippet.title isEqualToString:@"#PopularOnYouTube"] )
                 {
                     // get related playlists for our channel
                     
@@ -357,5 +358,154 @@ static const CGFloat kCropDimension = 44;
         }];
     }];
 }
+
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp I
+// Lấy tất cả các categories từ youtube về
+// =================================================================
+- (void)getCategoriesWithRegionCode: (NSString *) regionCode andLanguage: (NSString *) lang {
+    GTLQueryYouTube *query;
+    
+    query = [GTLQueryYouTube queryForGuideCategoriesListWithPart:@"snippet"];
+    query.regionCode = regionCode; //@"US"
+    query.hl = lang; //@"en-US"
+    
+    
+    //__block NSMutableArray *blockVideos = self.videos;
+    
+    // let's get the categories
+    [self.youtubeService executeQuery:query completionHandler:^(GTLServiceTicket *blockTicket, GTLYouTubeGuideCategoryListResponse *list, NSError *error) {
+        
+        if (error) {
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeCategories  didFinishWithResults:nil];
+            return;
+        }
+        
+        NSMutableArray *categories = [NSMutableArray arrayWithCapacity:list.items.count];
+        
+        [list.items enumerateObjectsUsingBlock:^(GTLYouTubeGuideCategory *category, NSUInteger idx, BOOL *stop) {
+            [categories addObject:category];
+        }];
+        // our delegate on the main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            /*==================Delegate=============*/
+            /*=======================================*/
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeCategories didFinishWithResults:categories];
+            return;
+        });
+
+    }];
+}
+
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp 2
+// Lấy tất cả các chanel của 1 category từ youtube về
+// =================================================================
+- (void)getChannelsWithCategoryIdentifier: (NSString *) identifier andMaxResults: (int) maxResult {
+    GTLQueryYouTube *channelsQuery = [GTLQueryYouTube queryForChannelsListWithPart:@"id,snippet"];
+    channelsQuery.categoryId = identifier;
+    channelsQuery.maxResults = maxResult;
+    
+    // let's get the channels for the given category
+    __unused GTLServiceTicket *channelsTicket = [self.youtubeService executeQuery:channelsQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse *channelList, NSError *error) {
+        
+        if (error) {
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeChannels didFinishWithResults:nil];
+            return;
+        }
+        
+        NSMutableArray *chanels = [NSMutableArray arrayWithCapacity:channelList.items.count];
+        
+        // we are only interested in one channel: the best of the best
+        [channelList.items enumerateObjectsUsingBlock:^(GTLYouTubeChannel *channel, NSUInteger idx, BOOL *stop) {
+            [chanels addObject:channel];            
+        }];
+        // our delegate on the main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            /*==================Delegate=============*/
+            /*=======================================*/
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeChannels didFinishWithResults:chanels];
+            return;
+        });
+        
+    }];
+}
+
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp 3
+// Lấy tất cả các playlists của 1 chanel từ youtube về
+// =================================================================
+- (void)getPlaylistsWithChannelIdentifier: (NSString *) identifier andMaxResults: (int) maxResult {
+    // get related playlists for our channel
+    
+    GTLQueryYouTube *playlistsQuery = [GTLQueryYouTube queryForPlaylistsListWithPart:@"id,snippet"];
+    playlistsQuery.channelId = identifier;
+    playlistsQuery.maxResults = maxResult;
+    
+    __unused GTLServiceTicket *playlistsTicket = [self.youtubeService executeQuery:playlistsQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistListResponse *playlistsResponse, NSError *error) {
+        
+        if (error) {
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypePlaylists didFinishWithResults:nil];
+            return;
+        }
+        
+        NSMutableArray *playlists = [NSMutableArray arrayWithCapacity:playlistsResponse.items.count];
+        
+        // list of related playlists: only 1
+        [playlistsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylistItem *playlist, NSUInteger idx, BOOL *stop) {
+            [playlists addObject:playlist];
+        }];
+        // our delegate on the main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            /*==================Delegate=============*/
+            /*=======================================*/
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypePlaylists didFinishWithResults:playlists];
+            return;
+        });
+    }];
+
+}
+
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp 4
+// Lấy tất cả các playlistItem của 1 playlists từ youtube về
+// =================================================================
+- (void)getVideosWithPlaylistIdentifier: (NSString *) identifier andMaxResults: (int) maxResult {
+    GTLQueryYouTube *videosQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"id,snippet"];
+    videosQuery.playlistId = identifier;
+    videosQuery.maxResults = 20;
+    
+    __unused GTLServiceTicket *videosTicket = [self.youtubeService executeQuery:videosQuery completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse *playlistItemsResponse, NSError *error) {
+        
+        if (error) {
+            /*==================Delegate=============*/
+            /*=======================================*/
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeVideos didFinishWithResults:nil];
+            return;
+        }
+        
+        [playlistItemsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylistItem *playlistItem, NSUInteger idx, BOOL *stop) {
+            GTLYouTubeVideo *video = (GTLYouTubeVideo *)playlistItem.snippet.resourceId;
+            NSString *videoTitle = playlistItem.snippet.title;
+            NSString *videoId = [video.JSON valueForKey:@"videoId"];
+            
+            NSLog(@"videoid: %@", videoId);
+            NSLog(@"title: %@", videoTitle);
+            
+            
+            //[blockVideos addObject:@{@"title":videoTitle,@"identifier":videoId}];
+        }];
+        
+        //[self.tableView reloadData];
+        
+    }];
+
+
+}
+
 
 @end

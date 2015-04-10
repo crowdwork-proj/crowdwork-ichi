@@ -18,7 +18,13 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
     YTRequestTypeShowMyListVideo = 1,
     YTRequestTypeGetMyChanel = 2,
     YTRequestTypeGetListLike = 3,
-    YTRequestTypeShowMyPlayList = 4
+    YTRequestTypeShowMyPlayList = 4,
+    
+    //type dành cho truy vấn cấu trúc ngoài vào
+    YTRequestTypeCategories = 11,
+    YTRequestTypeChannels = 12,
+    YTRequestTypePlaylists = 13,
+    YTRequestTypeVideos = 14
     
 };
 
@@ -89,6 +95,32 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
 // Hiển thị các video , có thể người dùng thích xem, kiểu recomandation
 // =================================================================
 - (NSString*)showlistRecommendationVideo;
+
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp I
+// Lấy tất cả các categories từ youtube về
+// =================================================================
+- (void)getCategoriesWithRegionCode: (NSString *) regionCode andLanguage: (NSString *) lang;
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp 2
+// Lấy tất cả các chanel của 1 category từ youtube về
+// =================================================================
+- (void)getChannelsWithCategoryIdentifier: (NSString *) identifier andMaxResults: (int) maxResult;
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp 3
+// Lấy tất cả các playlists của 1 chanel từ youtube về
+// =================================================================
+- (void)getPlaylistsWithChannelIdentifier: (NSString *) identifier andMaxResults: (int) maxResult;
+// =================================================================
+// Bộ hàm truy vấn theo kiến trúc của youtube
+// hàm cấp 4
+// Lấy tất cả các videos của 1 playlist từ youtube về
+// =================================================================
+- (void)getVideosWithPlaylistIdentifier: (NSString *) identifier andMaxResults: (int) maxResult;
+
 // Hàm hỗ trợ
 - (BOOL)isAuthorized;
 @end
