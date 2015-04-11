@@ -22,27 +22,8 @@
 @implementation MyMainViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    
-    // Do any additional setup after loading the view.
-    
-    /*YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
-    youtubeApiLibs.delegate = self;
-    [youtubeApiLibs doLoginWithViewController:self];
-    */
-    
-    //[youtubeApiLibs showMyListVideo];
-    //[youtubeApiLibs getAll];
-    
-    //Lấy tất cả các category từ yoututbe
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    if ( [[YouTubeAPILibs sharedManager] isLogged ] == true ) {
-        loginButton.hidden = YES;
-    }
 }
 
 - (IBAction)onLogin:(id)sender
@@ -55,35 +36,36 @@
 }
 
 
+// マイアップロード
 - (IBAction)doGetMyUpload:(id)sender
 {
     VideoListViewController *videoListController = [[VideoListViewController alloc]init];
     [self.navigationController  pushViewController:videoListController animated:YES];
 }
-
+// マイチャネル
 - (IBAction)doGetMyChanel:(id)sender
 {
     ChanelListViewController *chanelListViewController = [[ChanelListViewController alloc]init];
     [self.navigationController pushViewController:chanelListViewController animated:YES];
 }
-
+// 画像の一覧
 - (IBAction)doGetListVideo:(id)sender
 {
 
 }
-
+// 後で見る
 - (IBAction)doViewAfter:(id)sender
 {
     ViewAfterListViewController *viewAfterViewController = [[ViewAfterListViewController alloc]init];
     [self.navigationController pushViewController:viewAfterViewController animated:YES];
 }
-
+// 気になる
 - (IBAction)doGetListLike:(id)sender
 {
     LikeListViewController *liveViewController = [[LikeListViewController alloc]init];
     [self.navigationController pushViewController:liveViewController animated:YES];
 }
-
+// プレイ一人
 - (IBAction)doGetMyPlayList:(id)sender
 {
     MyPlayListViewController *playListViewController = [[MyPlayListViewController alloc]init];
@@ -91,6 +73,7 @@
 }
 
 #pragma mark - YouTubeAPILibsDelegate methods
+
 - (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType)type didFinishWithResults:(NSArray *)results {
     if (type == YTRequestTypeShowMyListVideo) {
         NSLog(@"video data %@",results);
@@ -105,7 +88,7 @@
         }
     }
     
-    //Đầu tiên là lấy hết categories về
+    //[1] 全てカテゴリを習得
     if (type == YTRequestTypeCategories) {
         NSLog(@"categories data %@",results);
         for (int i =0 ; i < [results count]; i++) {
@@ -117,13 +100,13 @@
             NSLog(@" identifier     [%@] \n",[data identifier]);
             NSLog(@"=====================================\n");
             
-            //dùng identifier để lấy hết các kênh của 1 category
+            // identifierでカテゴリの全てチャネルを習得
             [[YouTubeAPILibs sharedManager] getChannelsWithCategoryIdentifier:data.identifier andMaxResults:1];
         }
     }
     
     
-    //Bước 2: lấy hết channels của 1 category nào đó
+    //[2]: カテゴリの全てチャネルを習得
     if (type == YTRequestTypeChannels) {
         NSLog(@"chanels data %@",results);
         for (int i =0 ; i < [results count]; i++) {
@@ -136,11 +119,12 @@
             NSLog(@"=====================================\n");
             
             //Mỗi channel có nhiều playlist, lấy hết nó về
+            // チャネルに対して全てプレイリストを習得
             [[YouTubeAPILibs sharedManager] getPlaylistsWithChannelIdentifier:data.identifier andMaxResults:1];
         }
     }
     
-    //Bước 3: lấy hết playlist của 1 channel về
+    //[3]: チャネルに対して全てプレイリストを習得
     if (type == YTRequestTypePlaylists) {
         NSLog(@"playlists data %@",results);
         for (int i =0 ; i < [results count]; i++) {
@@ -151,12 +135,12 @@
             NSLog(@" identifier     [%@] \n",[data identifier]);
             NSLog(@"=====================================\n");
             
-            //mỗi channel có nhiều videos, hãy lấy hết các video đó về
+            //チャネルのビデオ一覧を習得
             [[YouTubeAPILibs sharedManager] getVideosWithPlaylistIdentifier:data.identifier andMaxResults:1];
         }
     }
     
-    //Bước 4: lấy hết videos của 1 playlist về
+    //[4]: プレイリストのビデオを習得
     if (type == YTRequestTypeVideos) {
         NSLog(@"playlist data %@",results);
         for (int i =0 ; i < [results count]; i++) {

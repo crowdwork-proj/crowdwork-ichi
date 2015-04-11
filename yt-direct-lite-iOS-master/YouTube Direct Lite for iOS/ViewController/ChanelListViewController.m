@@ -1,16 +1,16 @@
 #import "ChanelListViewController.h"
-#import "VideoData.h"
 #import "GTLYouTube.h"
 #import "VideoPlayerViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Utils.h"
+#import "ChannelData.h"
 
 @implementation ChanelListViewController
 
 - (id)init {
   self = [super init];
   if (self) {
-      _videos = [[NSArray alloc] init];
+      _channelList = [[NSArray alloc] init];
   }
   return self;
 }
@@ -26,6 +26,7 @@
   self.tableView.separatorColor = [UIColor clearColor];
   self.view = self.tableView;
     
+  // ライブラリを呼ぶ
   YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
   youtubeApiLibs.delegate = self;
   [youtubeApiLibs getMyChanel];
@@ -38,22 +39,21 @@
     
     if (type == YTRequestTypeGetMyChanel) {
         
-        for (int i =0 ; i < [results count]; i++) {
-            //VideoData *data = [results objectAtIndex:i];
-            //NSLog(@"=====================================\n");
-            //NSLog(@" thumbnail data [%@] \n",data.thumbnail);
-            //NSLog(@" title          [%@] \n",[data getTitle]);
-            //NSLog(@" view           [%@] \n",data.getViews);
-            //NSLog(@" duration       [%@] \n",[Utils humanReadableFromYouTubeTime:data.getDuration]);
-            //NSLog(@"=====================================\n");
-        }
-        //self.videos = results;
+         for ( int i = 0 ; i < [results count]; i++) {
+             NSLog(@"=====================================\n");
+             ChannelData *sub = [results objectAtIndex:i];
+             NSLog(@"channel title         [%@] \n",sub.getTitle);
+             NSLog(@"channel description   [%@] \n",sub.getDescription);
+             NSLog(@"channel url           [%@] \n",sub.getDescription);
+             NSLog(@"=====================================\n");
+         }
+        
+        self.channelList = results;
     }
     
     [self.tableView reloadData];
     
 }
-
 
 #pragma mark - UITableViewDataSource
 
@@ -66,25 +66,16 @@
     cell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleSubtitle)
                                   reuseIdentifier:kReuseIdentifier];
   }
-  VideoData *vidData = [self.videos objectAtIndex:indexPath.row];
-  cell.imageView.image = vidData.thumbnail;
-  cell.textLabel.text = [vidData getTitle];
-  cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ -- %@ views",
-                               [Utils humanReadableFromYouTubeTime:vidData.getDuration],
-                               vidData.getViews];
+  ChannelData *subCh = [self.channelList objectAtIndex:indexPath.row];
+  cell.imageView.image = subCh.thumbnail;
+  cell.textLabel.text = [subCh getTitle];
+  cell.detailTextLabel.text = [subCh getDescription];
+    
   return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    VideoData *selectedVideo = [_videos objectAtIndex:indexPath.row];
-    VideoPlayerViewController *videoController = [[VideoPlayerViewController alloc] init];
-    videoController.videoData = selectedVideo;
-    [[self navigationController] pushViewController:videoController animated:YES];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return [self.videos count];
+  return [self.channelList count];
 }
 
 @end

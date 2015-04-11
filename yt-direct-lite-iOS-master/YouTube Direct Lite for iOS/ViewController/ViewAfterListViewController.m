@@ -26,9 +26,10 @@
   self.tableView.separatorColor = [UIColor clearColor];
   self.view = self.tableView;
     
+  // ライブラリを呼ぶ
   YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
   youtubeApiLibs.delegate = self;
-  [youtubeApiLibs showListVideoViewLater];
+  [youtubeApiLibs getMyListSeeVideoLater];
 
 }
 
@@ -37,7 +38,7 @@
      didFinishWithResults:(NSArray *)results{
     
     if (type == YTRequestTypeShowMyListVideo) {
-        NSLog(@"video data %@",results);
+
         for (int i =0 ; i < [results count]; i++) {
             VideoData *data = [results objectAtIndex:i];
             NSLog(@"=====================================\n");

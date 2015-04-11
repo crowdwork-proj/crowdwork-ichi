@@ -7,7 +7,6 @@
 //
 
 #import "VideoPlayerViewController.h"
-#import "UploadController.h"
 #import "Utils.h"
 
 @interface VideoPlayerViewController ()
@@ -18,8 +17,7 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-  _directTag = [[YouTubeDirectTag alloc] init];
-  _directTag.delegate = self;
+
   if (self) {
     // Custom initialization
   }
@@ -44,12 +42,6 @@
 
   [self.view addSubview:_webView];
 
-  UIBarButtonItem *submitItem =
-      [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                    target:self
-                                                    action:@selector(submitYTDL:)];
-  submitItem.title = @"Submit";
-  self.toolbarItems = [NSArray arrayWithObjects:submitItem, nil];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -58,19 +50,10 @@
   self.webView.frame = f;
 }
 
-- (IBAction)submitYTDL:(id)sender {
-  [self.directTag directTagWithService:_youtubeService videoData:_videoData];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - uploadYouTubeVideo
-
-- (void)directTag:(YouTubeDirectTag *)directTag didFinishWithResults:(GTLYouTubeVideo *)video {
-  [Utils showAlert:@"Tags Updates" message:[video.snippet.tags componentsJoinedByString:@""]];
-}
 @end
