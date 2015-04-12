@@ -17,6 +17,7 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
     YTRequestTypeGetMyChanel = 2,
     YTRequestTypeGetListLike = 3,
     YTRequestTypeShowMyPlayList = 4,
+    YTRequestTypeViewVideoLater = 4,
     
     /*例外アクセスに向かい*/
     YTRequestTypeCategories = 11,
@@ -53,7 +54,7 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
 
 // ログイン機能ーOAuthを利用する
 - (void)doLoginWithViewController:(UIViewController *) viewController;
-// マイアップロード
+// 動画一覧
 - (void)getMyUploadVideo;
 // チャンネル
 - (void)getMyChanel;

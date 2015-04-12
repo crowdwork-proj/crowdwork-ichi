@@ -26,6 +26,7 @@
     [super viewDidLoad];
 }
 
+// ログイン
 - (IBAction)onLogin:(id)sender
 {
     YouTubeAPILibs *youtubeApiLibs = [YouTubeAPILibs sharedManager];
@@ -35,8 +36,7 @@
     [youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
 }
 
-
-// マイアップロード
+// 画像の一覧
 - (IBAction)doGetMyUpload:(id)sender
 {
     VideoListViewController *videoListController = [[VideoListViewController alloc]init];
@@ -47,11 +47,6 @@
 {
     ChanelListViewController *chanelListViewController = [[ChanelListViewController alloc]init];
     [self.navigationController pushViewController:chanelListViewController animated:YES];
-}
-// 画像の一覧
-- (IBAction)doGetListVideo:(id)sender
-{
-
 }
 // 後で見る
 - (IBAction)doViewAfter:(id)sender
@@ -154,8 +149,6 @@
     }
     
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

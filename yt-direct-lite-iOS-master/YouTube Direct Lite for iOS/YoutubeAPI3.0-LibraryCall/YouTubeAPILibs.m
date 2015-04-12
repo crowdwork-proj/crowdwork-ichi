@@ -28,6 +28,7 @@ static const CGFloat kCropDimension = 44;
 }
 
 // ログイン
+
 - (void)doLoginWithViewController: (UIViewController *) viewController
 {
     NSLog(@"---doLogin---");
@@ -44,8 +45,8 @@ static const CGFloat kCropDimension = 44;
     }
 }
 
-/* アップロード一覧 */
-- (void)getMyUploadVideo
+/* APIを呼ぶ*/
+- (void)callYoutubeAPI_MyYoutube:(NSUInteger)requestType
 {
     // Construct query
     GTLQueryYouTube *channelsListQuery = [GTLQueryYouTube
@@ -57,530 +58,175 @@ static const CGFloat kCropDimension = 44;
     // This callback uses the block syntax
     [self.youtubeService executeQuery:channelsListQuery
      
-        completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
-                            
-                            *response, NSError *error) {
-            
-            if (error) {
-                /*==================Delegate=============*/
-                /*=======================================*/
-                [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                return;
-            }
-            
-            NSLog(@"Finished API call");
-            
-            if ([[response items] count] > 0) {
-                
-                GTLYouTubeChannel *channel = response[0];
-                
-                NSString *uploadsPlaylistId =
-                
-                channel.contentDetails.relatedPlaylists.uploads;
-                
-                GTLQueryYouTube *playlistItemsListQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"contentDetails"];
-                playlistItemsListQuery.maxResults = 20l;
-                playlistItemsListQuery.playlistId = uploadsPlaylistId;
-                
-                // This callback uses the block syntax
-                
-                [self.youtubeService executeQuery:playlistItemsListQuery
-                 
-                    completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse
+                    completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
                                         
                                         *response, NSError *error) {
                         
                         if (error) {
+                            /*==================Delegate=============*/
+                            /*=======================================*/
                             [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
                             return;
                         }
                         
                         NSLog(@"Finished API call");
                         
-                        NSMutableArray *videoIds = [NSMutableArray arrayWithCapacity:response.items.count];
-                        
-                        for (GTLYouTubePlaylistItem *playlistItem in response.items) {
+                        if ([[response items] count] > 0) {
                             
-                            [videoIds addObject:playlistItem.contentDetails.videoId];
+                            GTLYouTubeChannel *channel = response[0];
+                            NSString *uploadsPlaylistId = nil;
+                            switch (requestType) {
+                                case YTRequestTypeGetListLike:
+                                    uploadsPlaylistId = channel.contentDetails.relatedPlaylists.likes;
+                                    break;
+                                case YTRequestTypeShowMyListVideo:
+                                    uploadsPlaylistId = channel.contentDetails.relatedPlaylists.uploads;
+                                    break;
+                                case YTRequestTypePlaylists:
+                                    uploadsPlaylistId = channel.contentDetails.relatedPlaylists.watchHistory;
+                                    break;
+                                case YTRequestTypeViewVideoLater:
+                                    uploadsPlaylistId = channel.contentDetails.relatedPlaylists.watchLater;
+                                    break;
+                                default:
+                                    break;
+                            }
                             
-                        }
-                        
-                        GTLQueryYouTube *videosListQuery = [GTLQueryYouTube queryForVideosListWithPart:@"id,contentDetails,snippet,status,statistics"];
-                        videosListQuery.identifier = [videoIds componentsJoinedByString: @","];
-                        
-                        
-                        [self.youtubeService executeQuery:videosListQuery
-                         
-                            completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeVideoListResponse
+                            GTLQueryYouTube *playlistItemsListQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"contentDetails"];
+                            playlistItemsListQuery.maxResults = 20l;
+                            playlistItemsListQuery.playlistId = uploadsPlaylistId;
+                            
+                            // This callback uses the block syntax
+                            
+                            [self.youtubeService executeQuery:playlistItemsListQuery
+                             
+                                            completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse
+                                                                
+                                                                *response, NSError *error) {
                                                 
-                                                *response, NSError *error) {
-                                if (error) {
-                                    /*==================Delegate=============*/
-                                    /*=======================================*/
-                                    [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                    return;
-                                }
-                                
-                                NSLog(@"Finished API call");
-                                NSMutableArray *videos = [NSMutableArray arrayWithCapacity:response.items.count];
-                                VideoData *vData;
-                                
-                                for (GTLYouTubeVideo *video in response.items){
-                                    if ([@"public" isEqualToString:video.status.privacyStatus]){
-                                        vData = [VideoData alloc];
-                                        vData.video = video;
-                                        [videos addObject:vData];
-                                    }
-                                }
-                                
-                                // Schedule an async job to fetch the image data for each result and
-                                // resize the large image in to a smaller thumbnail.
-                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                                    NSMutableArray *removeThese = [NSMutableArray array];
-                                    
-                                    for (VideoData *vData in videos) {
-                                        // Fetch synchronously the full sized image.
-                                        NSURL *url = [NSURL URLWithString:vData.getThumbUri];
-                                        NSData *imageData = [NSData dataWithContentsOfURL:url];
-                                        UIImage *image = [UIImage imageWithData:imageData];
-                                        if (!image) {
-                                            [removeThese addObject:vData];
-                                            continue;
-                                        }
-                                        vData.fullImage = image;
-                                        // Create a thumbnail from the fullsized image.
-                                        UIGraphicsBeginImageContext(CGSizeMake(kCropDimension,
-                                                                               kCropDimension));
-                                        [image drawInRect:
-                                         CGRectMake(0, 0, kCropDimension, kCropDimension)];
-                                        vData.thumbnail = UIGraphicsGetImageFromCurrentImageContext();
-                                        UIGraphicsEndImageContext();
-                                    }
-                                    
-                                    // Remove images that has no image data.
-                                    [videos removeObjectsInArray:removeThese];
-                                    
-                                    // Once all the images have been fetched and cached, call
-                                    // our delegate on the main thread.
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        /*==================Delegate=============*/
-                                        /*=======================================*/
-                                        [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:videos];
-                                        return;
-                                    });
-                                });
-                                
-                            }];
+                                                if (error) {
+                                                    [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
+                                                    return;
+                                                }
+                                                
+                                                NSLog(@"Finished API call");
+                                                
+                                                NSMutableArray *videoIds = [NSMutableArray arrayWithCapacity:response.items.count];
+                                                
+                                                for (GTLYouTubePlaylistItem *playlistItem in response.items) {
+                                                    
+                                                    [videoIds addObject:playlistItem.contentDetails.videoId];
+                                                    
+                                                }
+                                                
+                                                GTLQueryYouTube *videosListQuery = [GTLQueryYouTube queryForVideosListWithPart:@"id,contentDetails,snippet,status,statistics"];
+                                                videosListQuery.identifier = [videoIds componentsJoinedByString: @","];
+                                                
+                                                
+                                                [self.youtubeService executeQuery:videosListQuery
+                                                 
+                                                                completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeVideoListResponse
+                                                                                    
+                                                                                    *response, NSError *error) {
+                                                                    if (error) {
+                                                                        /*==================Delegate=============*/
+                                                                        /*=======================================*/
+                                                                        [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
+                                                                        return;
+                                                                    }
+                                                                    
+                                                                    NSLog(@"Finished API call");
+                                                                    NSMutableArray *videos = [NSMutableArray arrayWithCapacity:response.items.count];
+                                                                    VideoData *vData;
+                                                                    
+                                                                    for (GTLYouTubeVideo *video in response.items){
+                                                                        if ([@"public" isEqualToString:video.status.privacyStatus]){
+                                                                            vData = [VideoData alloc];
+                                                                            vData.video = video;
+                                                                            [videos addObject:vData];
+                                                                        }
+                                                                    }
+                                                                    
+                                                                    // Schedule an async job to fetch the image data for each result and
+                                                                    // resize the large image in to a smaller thumbnail.
+                                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                                                                        NSMutableArray *removeThese = [NSMutableArray array];
+                                                                        
+                                                                        for (VideoData *vData in videos) {
+                                                                            // Fetch synchronously the full sized image.
+                                                                            NSURL *url = [NSURL URLWithString:vData.getThumbUri];
+                                                                            NSData *imageData = [NSData dataWithContentsOfURL:url];
+                                                                            UIImage *image = [UIImage imageWithData:imageData];
+                                                                            if (!image) {
+                                                                                [removeThese addObject:vData];
+                                                                                continue;
+                                                                            }
+                                                                            vData.fullImage = image;
+                                                                            // Create a thumbnail from the fullsized image.
+                                                                            UIGraphicsBeginImageContext(CGSizeMake(kCropDimension,
+                                                                                                                   kCropDimension));
+                                                                            [image drawInRect:
+                                                                             CGRectMake(0, 0, kCropDimension, kCropDimension)];
+                                                                            vData.thumbnail = UIGraphicsGetImageFromCurrentImageContext();
+                                                                            UIGraphicsEndImageContext();
+                                                                        }
+                                                                        
+                                                                        // Remove images that has no image data.
+                                                                        [videos removeObjectsInArray:removeThese];
+                                                                        
+                                                                        // Once all the images have been fetched and cached, call
+                                                                        // our delegate on the main thread.
+                                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                                            /*==================Delegate=============*/
+                                                                            /*=======================================*/
+                                                                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:videos];
+                                                                            return;
+                                                                        });
+                                                                    });
+                                                                    
+                                                                }];
+                                            }];
+                        }
                     }];
-            }
-        }];
     
+    return;
+
+}
+
+/* 画像一覧 */
+
+- (void)getMyUploadVideo
+{
+    [self callYoutubeAPI_MyYoutube:YTRequestTypeShowMyListVideo];
     return;
 }
 
 /*後で見る*/
+
 - (void)getMyListSeeVideoLater{
     
-    // Construct query
-    GTLQueryYouTube *channelsListQuery = [GTLQueryYouTube
-                                          
-                                          queryForChannelsListWithPart:@"contentDetails"];
-    
-    channelsListQuery.mine = YES;
-    
-    // This callback uses the block syntax
-    [self.youtubeService executeQuery:channelsListQuery
-     
-                    completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
-                                        
-                                        *response, NSError *error) {
-                        
-                        if (error) {
-                            /*==================Delegate=============*/
-                            /*=======================================*/
-                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                            return;
-                        }
-                        
-                        NSLog(@"Finished API call");
-                        
-                        if ([[response items] count] > 0) {
-                            
-                            GTLYouTubeChannel *channel = response[0];
-                            
-                            NSString *uploadsPlaylistId =
-                            
-                            channel.contentDetails.relatedPlaylists.watchLater;
-                            
-                            GTLQueryYouTube *playlistItemsListQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"contentDetails"];
-                            playlistItemsListQuery.maxResults = 20l;
-                            playlistItemsListQuery.playlistId = uploadsPlaylistId;
-                            
-                            // This callback uses the block syntax
-                            
-                            [self.youtubeService executeQuery:playlistItemsListQuery
-                             
-                                            completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse
-                                                                
-                                                                *response, NSError *error) {
-                                                
-                                                if (error) {
-                                                    [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                                    return;
-                                                }
-                                                
-                                                NSLog(@"Finished API call");
-                                                
-                                                NSMutableArray *videoIds = [NSMutableArray arrayWithCapacity:response.items.count];
-                                                
-                                                for (GTLYouTubePlaylistItem *playlistItem in response.items) {
-                                                    
-                                                    [videoIds addObject:playlistItem.contentDetails.videoId];
-                                                    
-                                                }
-                                                
-                                                GTLQueryYouTube *videosListQuery = [GTLQueryYouTube queryForVideosListWithPart:@"id,contentDetails,snippet,status,statistics"];
-                                                videosListQuery.identifier = [videoIds componentsJoinedByString: @","];
-                                                
-                                                
-                                                [self.youtubeService executeQuery:videosListQuery
-                                                 
-                                                                completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeVideoListResponse
-                                                                                    
-                                                                                    *response, NSError *error) {
-                                                                    if (error) {
-                                                                        /*==================Delegate=============*/
-                                                                        /*=======================================*/
-                                                                        [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                                                        return;
-                                                                    }
-                                                                    
-                                                                    NSLog(@"Finished API call");
-                                                                    NSMutableArray *videos = [NSMutableArray arrayWithCapacity:response.items.count];
-                                                                    VideoData *vData;
-                                                                    
-                                                                    for (GTLYouTubeVideo *video in response.items){
-                                                                        if ([@"public" isEqualToString:video.status.privacyStatus]){
-                                                                            vData = [VideoData alloc];
-                                                                            vData.video = video;
-                                                                            [videos addObject:vData];
-                                                                        }
-                                                                    }
-                                                                    
-                                                                    // Schedule an async job to fetch the image data for each result and
-                                                                    // resize the large image in to a smaller thumbnail.
-                                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                                                                        NSMutableArray *removeThese = [NSMutableArray array];
-                                                                        
-                                                                        for (VideoData *vData in videos) {
-                                                                            // Fetch synchronously the full sized image.
-                                                                            NSURL *url = [NSURL URLWithString:vData.getThumbUri];
-                                                                            NSData *imageData = [NSData dataWithContentsOfURL:url];
-                                                                            UIImage *image = [UIImage imageWithData:imageData];
-                                                                            if (!image) {
-                                                                                [removeThese addObject:vData];
-                                                                                continue;
-                                                                            }
-                                                                            vData.fullImage = image;
-                                                                            // Create a thumbnail from the fullsized image.
-                                                                            UIGraphicsBeginImageContext(CGSizeMake(kCropDimension,
-                                                                                                                   kCropDimension));
-                                                                            [image drawInRect:
-                                                                             CGRectMake(0, 0, kCropDimension, kCropDimension)];
-                                                                            vData.thumbnail = UIGraphicsGetImageFromCurrentImageContext();
-                                                                            UIGraphicsEndImageContext();
-                                                                        }
-                                                                        
-                                                                        // Remove images that has no image data.
-                                                                        [videos removeObjectsInArray:removeThese];
-                                                                        
-                                                                        // Once all the images have been fetched and cached, call
-                                                                        // our delegate on the main thread.
-                                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                                            /*==================Delegate=============*/
-                                                                            /*=======================================*/
-                                                                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:videos];
-                                                                            return;
-                                                                        });
-                                                                    });
-                                                                    
-                                                                }];
-                                            }];
-                        }
-                    }];
-    
+    [self callYoutubeAPI_MyYoutube:YTRequestTypeViewVideoLater];
     return ;
 }
 
 /*自分のプレイリストーHistory*/
-- (NSString*)getMyPlayList{
+
+- (void)getMyPlayList{
     
-    // Construct query
-    GTLQueryYouTube *channelsListQuery = [GTLQueryYouTube
-                                          
-                                          queryForChannelsListWithPart:@"contentDetails"];
-    
-    channelsListQuery.mine = YES;
-    
-    // This callback uses the block syntax
-    [self.youtubeService executeQuery:channelsListQuery
-     
-                    completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
-                                        
-                                        *response, NSError *error) {
-                        
-                        if (error) {
-                            /*==================Delegate=============*/
-                            /*=======================================*/
-                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                            return;
-                        }
-                        
-                        NSLog(@"Finished API call");
-                        
-                        if ([[response items] count] > 0) {
-                            
-                            GTLYouTubeChannel *channel = response[0];
-                            
-                            NSString *uploadsPlaylistId =
-                            
-                            channel.contentDetails.relatedPlaylists.watchHistory;
-                            
-                            GTLQueryYouTube *playlistItemsListQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"contentDetails"];
-                            playlistItemsListQuery.maxResults = 20l;
-                            playlistItemsListQuery.playlistId = uploadsPlaylistId;
-                            
-                            // This callback uses the block syntax
-                            
-                            [self.youtubeService executeQuery:playlistItemsListQuery
-                             
-                                            completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse
-                                                                
-                                                                *response, NSError *error) {
-                                                
-                                                if (error) {
-                                                    [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                                    return;
-                                                }
-                                                
-                                                NSLog(@"Finished API call");
-                                                
-                                                NSMutableArray *videoIds = [NSMutableArray arrayWithCapacity:response.items.count];
-                                                
-                                                for (GTLYouTubePlaylistItem *playlistItem in response.items) {
-                                                    
-                                                    [videoIds addObject:playlistItem.contentDetails.videoId];
-                                                    
-                                                }
-                                                
-                                                GTLQueryYouTube *videosListQuery = [GTLQueryYouTube queryForVideosListWithPart:@"id,contentDetails,snippet,status,statistics"];
-                                                videosListQuery.identifier = [videoIds componentsJoinedByString: @","];
-                                                
-                                                
-                                                [self.youtubeService executeQuery:videosListQuery
-                                                 
-                                                                completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeVideoListResponse
-                                                                                    
-                                                                                    *response, NSError *error) {
-                                                                    if (error) {
-                                                                        /*==================Delegate=============*/
-                                                                        /*=======================================*/
-                                                                        [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                                                        return;
-                                                                    }
-                                                                    
-                                                                    NSLog(@"Finished API call");
-                                                                    NSMutableArray *videos = [NSMutableArray arrayWithCapacity:response.items.count];
-                                                                    VideoData *vData;
-                                                                    
-                                                                    for (GTLYouTubeVideo *video in response.items){
-                                                                        if ([@"public" isEqualToString:video.status.privacyStatus]){
-                                                                            vData = [VideoData alloc];
-                                                                            vData.video = video;
-                                                                            [videos addObject:vData];
-                                                                        }
-                                                                    }
-                                                                    
-                                                                    // Schedule an async job to fetch the image data for each result and
-                                                                    // resize the large image in to a smaller thumbnail.
-                                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                                                                        NSMutableArray *removeThese = [NSMutableArray array];
-                                                                        
-                                                                        for (VideoData *vData in videos) {
-                                                                            // Fetch synchronously the full sized image.
-                                                                            NSURL *url = [NSURL URLWithString:vData.getThumbUri];
-                                                                            NSData *imageData = [NSData dataWithContentsOfURL:url];
-                                                                            UIImage *image = [UIImage imageWithData:imageData];
-                                                                            if (!image) {
-                                                                                [removeThese addObject:vData];
-                                                                                continue;
-                                                                            }
-                                                                            vData.fullImage = image;
-                                                                            // Create a thumbnail from the fullsized image.
-                                                                            UIGraphicsBeginImageContext(CGSizeMake(kCropDimension,
-                                                                                                                   kCropDimension));
-                                                                            [image drawInRect:
-                                                                             CGRectMake(0, 0, kCropDimension, kCropDimension)];
-                                                                            vData.thumbnail = UIGraphicsGetImageFromCurrentImageContext();
-                                                                            UIGraphicsEndImageContext();
-                                                                        }
-                                                                        
-                                                                        // Remove images that has no image data.
-                                                                        [videos removeObjectsInArray:removeThese];
-                                                                        
-                                                                        // Once all the images have been fetched and cached, call
-                                                                        // our delegate on the main thread.
-                                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                                            /*==================Delegate=============*/
-                                                                            /*=======================================*/
-                                                                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:videos];
-                                                                            return;
-                                                                        });
-                                                                    });
-                                                                    
-                                                                }];
-                                            }];
-                        }
-                    }];
-    
-    return nil;
+    [self callYoutubeAPI_MyYoutube:YTRequestTypePlaylists];
+    return ;
 }
 
 // 気になる一覧
+
 - (void)getListLike{
 
-    // Construct query
-    GTLQueryYouTube *channelsListQuery = [GTLQueryYouTube
-                                          
-                                          queryForChannelsListWithPart:@"contentDetails"];
-    
-    channelsListQuery.mine = YES;
-    
-    // This callback uses the block syntax
-    [self.youtubeService executeQuery:channelsListQuery
-     
-                    completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeChannelListResponse
-                                        
-                                        *response, NSError *error) {
-                        
-                        if (error) {
-                            /*==================Delegate=============*/
-                            /*=======================================*/
-                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                            return;
-                        }
-                        
-                        NSLog(@"Finished API call");
-                        if ([[response items] count] > 0) {
-                            
-                            GTLYouTubeChannel *channel = response[0];
-                            NSLog(@"channel %@",channel);
-                            
-                            NSString *uploadsPlaylistId =
-                            
-                            channel.contentDetails.relatedPlaylists.likes;
-                            
-                            GTLQueryYouTube *playlistItemsListQuery = [GTLQueryYouTube queryForPlaylistItemsListWithPart:@"contentDetails"];
-                            playlistItemsListQuery.maxResults = 20l;
-                            playlistItemsListQuery.playlistId = uploadsPlaylistId;
-                            
-                            // This callback uses the block syntax
-                            
-                            [self.youtubeService executeQuery:playlistItemsListQuery
-                             
-                                            completionHandler:^(GTLServiceTicket *ticket, GTLYouTubePlaylistItemListResponse
-                                                                
-                                                                *response, NSError *error) {
-                                                
-                                                if (error) {
-                                                    [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                                    return;
-                                                }
-                                                
-                                                NSLog(@"Finished API call");
-                                                
-                                                NSMutableArray *videoIds = [NSMutableArray arrayWithCapacity:response.items.count];
-                                                
-                                                for (GTLYouTubePlaylistItem *playlistItem in response.items) {
-                                                    
-                                                    [videoIds addObject:playlistItem.contentDetails.videoId];
-                                                    
-                                                }
-                                                
-                                                GTLQueryYouTube *videosListQuery = [GTLQueryYouTube queryForVideosListWithPart:@"id,contentDetails,snippet,status,statistics"];
-                                                videosListQuery.identifier = [videoIds componentsJoinedByString: @","];
-                                                
-                                                
-                                                [self.youtubeService executeQuery:videosListQuery
-                                                 
-                                                                completionHandler:^(GTLServiceTicket *ticket, GTLYouTubeVideoListResponse
-                                                                                    
-                                                                                    *response, NSError *error) {
-                                                                    if (error) {
-                                                                        /*==================Delegate=============*/
-                                                                        /*=======================================*/
-                                                                        [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:nil];
-                                                                        return;
-                                                                    }
-                                                                    
-                                                                    NSLog(@"Finished API call");
-                                                                    NSMutableArray *videos = [NSMutableArray arrayWithCapacity:response.items.count];
-                                                                    VideoData *vData;
-                                                                    
-                                                                    for (GTLYouTubeVideo *video in response.items){
-                                                                        if ([@"public" isEqualToString:video.status.privacyStatus]){
-                                                                            vData = [VideoData alloc];
-                                                                            vData.video = video;
-                                                                            [videos addObject:vData];
-                                                                        }
-                                                                    }
-                                                                    
-                                                                    // Schedule an async job to fetch the image data for each result and
-                                                                    // resize the large image in to a smaller thumbnail.
-                                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                                                                        NSMutableArray *removeThese = [NSMutableArray array];
-                                                                        
-                                                                        for (VideoData *vData in videos) {
-                                                                            // Fetch synchronously the full sized image.
-                                                                            NSURL *url = [NSURL URLWithString:vData.getThumbUri];
-                                                                            NSData *imageData = [NSData dataWithContentsOfURL:url];
-                                                                            UIImage *image = [UIImage imageWithData:imageData];
-                                                                            if (!image) {
-                                                                                [removeThese addObject:vData];
-                                                                                continue;
-                                                                            }
-                                                                            vData.fullImage = image;
-                                                                            // Create a thumbnail from the fullsized image.
-                                                                            UIGraphicsBeginImageContext(CGSizeMake(kCropDimension,
-                                                                                                                   kCropDimension));
-                                                                            [image drawInRect:
-                                                                             CGRectMake(0, 0, kCropDimension, kCropDimension)];
-                                                                            vData.thumbnail = UIGraphicsGetImageFromCurrentImageContext();
-                                                                            UIGraphicsEndImageContext();
-                                                                        }
-                                                                        
-                                                                        // Remove images that has no image data.
-                                                                        [videos removeObjectsInArray:removeThese];
-                                                                        
-                                                                        // Once all the images have been fetched and cached, call
-                                                                        // our delegate on the main thread.
-                                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                                            /*==================Delegate=============*/
-                                                                            /*=======================================*/
-                                                                            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeShowMyListVideo didFinishWithResults:videos];
-                                                                            return;
-                                                                        });
-                                                                    });
-                                                                    
-                                                                }];
-                                            }];
-                        }
-                    }];
-
+    [self callYoutubeAPI_MyYoutube:YTRequestTypeViewVideoLater];
     return;
 }
 
 /*マイチャンネル*/
+
 - (void)getMyChanel {
     
     GTLQueryYouTube * query = [GTLQueryYouTube queryForSubscriptionsListWithPart:@"id,snippet"];
@@ -645,35 +291,8 @@ static const CGFloat kCropDimension = 44;
 
 }
 
-- (void)getMySearch {
-    
-    GTLQueryYouTube * query = [GTLQueryYouTube queryForSearchListWithPart:@"id,snippet"];
-    query.mine = YES;
-    query.maxResults = 50;
-    
-    // let's get the categories
-    [self.youtubeService executeQuery:query completionHandler:^(GTLServiceTicket *blockTicket, GTLYouTubeSearchListResponse *list, NSError *error) {
-        
-        if (error) {
-            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeGetMyChanel  didFinishWithResults:nil];
-            return;
-        }
-        
-        NSArray * items = list.items;
-        NSLog(@" my search %@",list);
-
-        for ( int i = 0 ; i < [items count]; i++) {
-            GTLYouTubeSearchResult *sub = [items objectAtIndex:i];
-            NSLog(@"channel title -- %@",sub);
-            NSLog(@"channel description -- %@",sub.snippet.description);
-            NSLog(@"channel url -- %@",sub.snippet.thumbnails.defaultProperty.url);
-            
-        }
-    }];
-    
-}
-
 /*youtubeから全てケテゴリを習得*/
+/*グロバルビデオからビデオを習得する*/
 
 - (void)getCategoriesWithRegionCode: (NSString *) regionCode andLanguage: (NSString *) lang {
     GTLQueryYouTube *query;
