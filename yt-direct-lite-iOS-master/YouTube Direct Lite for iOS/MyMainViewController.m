@@ -33,7 +33,7 @@
     youtubeApiLibs.delegate = self;
     [youtubeApiLibs doLoginWithViewController:self];
     
-    [youtubeApiLibs getCategoriesWithRegionCode:@"US" andLanguage:@"en-US"];
+    [youtubeApiLibs getCategoriesWithRegionCode:@"JP" andLanguage:@"ja-JP"];
 }
 
 // 画像の一覧
