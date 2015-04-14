@@ -4,13 +4,14 @@
 #import "VideoPlayerViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Utils.h"
+#import "ChannelsViewController.h"
 
 @implementation CategoriesViewController
 
 - (id)init {
   self = [super init];
   if (self) {
-      _videos = [[NSArray alloc] init];
+      _categories = [[NSArray alloc] init];
   }
   return self;
 }
@@ -18,6 +19,7 @@
 - (void)viewDidLoad {
 
   [super viewDidLoad];
+    self.navigationItem.title = @"CATEGORIES";
 
   self.tableView = [[UITableView alloc] initWithFrame:(CGRectZero) style:(UITableViewStylePlain)];
   self.tableView.delegate = self;
@@ -50,7 +52,7 @@
             
         }
         
-        self.videos = results;
+        self.categories = results;
     }
     
 
@@ -71,7 +73,7 @@
     cell = [[UITableViewCell alloc] initWithStyle:(UITableViewCellStyleSubtitle)
                                   reuseIdentifier:kReuseIdentifier];
   }
-  GTLYouTubeGuideCategory *data = [self.videos objectAtIndex:indexPath.row];
+  GTLYouTubeGuideCategory *data = [self.categories objectAtIndex:indexPath.row];
   cell.textLabel.text = data.snippet.title;
 //  cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ -- %@ views",
 //                               [Utils humanReadableFromYouTubeTime:vidData.getDuration],
@@ -81,10 +83,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   /*GOTO CHANNEL*/
+    NSString *channelIdentifier = [[self.categories objectAtIndex:indexPath.row] identifier];
+    ChannelsViewController *channelsViewController = [[ChannelsViewController alloc]init];
+    channelsViewController.identifier = channelIdentifier;
+    [self.navigationController pushViewController:channelsViewController animated:YES];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return [self.videos count];
+  return [self.categories count];
 }
 
 @end

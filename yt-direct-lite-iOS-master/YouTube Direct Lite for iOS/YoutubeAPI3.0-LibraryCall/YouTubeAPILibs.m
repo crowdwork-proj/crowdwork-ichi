@@ -378,7 +378,7 @@ static const CGFloat kCropDimension = 44;
         NSMutableArray *playlists = [NSMutableArray arrayWithCapacity:playlistsResponse.items.count];
         
         // list of related playlists: only 1
-        [playlistsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylistItem *playlist, NSUInteger idx, BOOL *stop) {
+        [playlistsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylist *playlist, NSUInteger idx, BOOL *stop) {
             [playlists addObject:playlist];
         }];
         // our delegate on the main thread.
@@ -409,17 +409,20 @@ static const CGFloat kCropDimension = 44;
             return;
         }
         
+        NSMutableArray *videos = [NSMutableArray arrayWithCapacity:playlistItemsResponse.items.count];
+        
         [playlistItemsResponse.items enumerateObjectsUsingBlock:^(GTLYouTubePlaylistItem *playlistItem, NSUInteger idx, BOOL *stop) {
             
-            /*習得されたビデオデータ*/
-            GTLYouTubeVideo *video = (GTLYouTubeVideo *)playlistItem.snippet.resourceId;
-            NSString *videoTitle = playlistItem.snippet.title;
-            NSString *videoId = [video.JSON valueForKey:@"videoId"];
-            NSLog(@"==============================================");
-            NSLog(@"videoid: [%@]\n", videoId);
-            NSLog(@"title:   [%@]\n", videoTitle);
-            NSLog(@"==============================================");
+            [videos addObject:playlistItem];
         }];
+        
+        // our delegate on the main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            /*==================Delegate=============*/
+            /*=======================================*/
+            [self.delegate getYouTubeUploads:self withRequestType:YTRequestTypeVideos didFinishWithResults:videos];
+            return;
+        });
         
     }];
 }
