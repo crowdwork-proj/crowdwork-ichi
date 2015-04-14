@@ -15,6 +15,8 @@
 		0B2AF6321AD8BEE300015AEF /* YouTubeAPILibs.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF6311AD8BEE300015AEF /* YouTubeAPILibs.m */; };
 		0B2AF6381AD8BF1900015AEF /* ChannelData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF6351AD8BF1900015AEF /* ChannelData.m */; };
 		0B2AF6391AD8BF1900015AEF /* VideoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2AF6371AD8BF1900015AEF /* VideoData.m */; };
+		0B362EA71ADD4D7D009CAD4F /* Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B362EA61ADD4D7D009CAD4F /* Categories.m */; };
+		0B362EAA1ADD4E8F009CAD4F /* CategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B362EA91ADD4E8F009CAD4F /* CategoriesViewController.m */; };
 		104DD6DD1840247B00ECD20B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 104DD6DC1840247B00ECD20B /* Foundation.framework */; };
 		104DD6DF1840247B00ECD20B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 104DD6DE1840247B00ECD20B /* CoreGraphics.framework */; };
 		104DD6E11840247B00ECD20B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 104DD6E01840247B00ECD20B /* UIKit.framework */; };
@@ -69,6 +71,10 @@
 		0B2AF6351AD8BF1900015AEF /* ChannelData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelData.m; sourceTree = "<group>"; };
 		0B2AF6361AD8BF1900015AEF /* VideoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoData.h; sourceTree = "<group>"; };
 		0B2AF6371AD8BF1900015AEF /* VideoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoData.m; sourceTree = "<group>"; };
+		0B362EA51ADD4D7D009CAD4F /* Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Categories.h; sourceTree = "<group>"; };
+		0B362EA61ADD4D7D009CAD4F /* Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Categories.m; sourceTree = "<group>"; };
+		0B362EA81ADD4E8F009CAD4F /* CategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesViewController.h; sourceTree = "<group>"; };
+		0B362EA91ADD4E8F009CAD4F /* CategoriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesViewController.m; sourceTree = "<group>"; };
 		104DD6D91840247B00ECD20B /* YouTube Direct Lite for iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "YouTube Direct Lite for iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		104DD6DC1840247B00ECD20B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		104DD6DE1840247B00ECD20B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -134,6 +140,8 @@
 		0B2AF60F1AD8094A00015AEF /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				0B362EA81ADD4E8F009CAD4F /* CategoriesViewController.h */,
+				0B362EA91ADD4E8F009CAD4F /* CategoriesViewController.m */,
 				0B2AF6251AD82F7300015AEF /* ViewAfterListViewController.h */,
 				0B2AF6261AD82F7300015AEF /* ViewAfterListViewController.m */,
 				0B2AF61B1AD816B000015AEF /* ChanelListViewController.h */,
@@ -160,6 +168,8 @@
 		0B2AF6331AD8BF1900015AEF /* DataEntry */ = {
 			isa = PBXGroup;
 			children = (
+				0B362EA51ADD4D7D009CAD4F /* Categories.h */,
+				0B362EA61ADD4D7D009CAD4F /* Categories.m */,
 				0B2AF6341AD8BF1900015AEF /* ChannelData.h */,
 				0B2AF6351AD8BF1900015AEF /* ChannelData.m */,
 				0B2AF6361AD8BF1900015AEF /* VideoData.h */,
@@ -368,6 +378,7 @@
 				104DD7261840249200ECD20B /* VideoPlayerViewController.m in Sources */,
 				0B2AF6221AD816B000015AEF /* LikeListViewController.m in Sources */,
 				104DD737184024FD00ECD20B /* GTLNetworking_Sources.m in Sources */,
+				0B362EA71ADD4D7D009CAD4F /* Categories.m in Sources */,
 				0B2AF6271AD82F7300015AEF /* ViewAfterListViewController.m in Sources */,
 				7EA904161AD6873F006C38BA /* MyMainViewController.m in Sources */,
 				0B2AF6211AD816B000015AEF /* ChanelListViewController.m in Sources */,
@@ -379,6 +390,7 @@
 				0B2AF6321AD8BEE300015AEF /* YouTubeAPILibs.m in Sources */,
 				104DD736184024FD00ECD20B /* GTLCommon_Sources.m in Sources */,
 				104DD7231840249200ECD20B /* Utils.m in Sources */,
+				0B362EAA1ADD4E8F009CAD4F /* CategoriesViewController.m in Sources */,
 				104DD6ED1840247B00ECD20B /* GCLAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

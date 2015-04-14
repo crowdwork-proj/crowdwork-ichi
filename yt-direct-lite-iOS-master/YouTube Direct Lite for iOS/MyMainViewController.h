@@ -13,6 +13,7 @@
 @interface MyMainViewController : UIViewController <YouTubeAPILibsDelegate>
 {
     IBOutlet UIButton *loginButton;
+    IBOutlet UIButton *categoryVideo;
     IBOutlet UIButton *getMyUploadButton;
     IBOutlet UIButton *getMyChanelButton;
     IBOutlet UIButton *getListVideoButton;
@@ -23,6 +24,7 @@
 }
 
 - (IBAction)onLogin:(id)sender;
+- (IBAction)docategoryVideo:(id)sender;
 - (IBAction)doGetMyUpload:(id)sender;
 - (IBAction)doGetMyChanel:(id)sender;
 - (IBAction)doGetListVideo:(id)sender;

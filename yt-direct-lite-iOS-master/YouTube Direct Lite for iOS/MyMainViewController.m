@@ -14,7 +14,7 @@
 #import "MyPlayListViewController.h"
 #import "ViewAfterListViewController.h"
 #import "MyMainViewController.h"
-
+#import  "CategoriesViewController.h"
 @interface MyMainViewController ()
 
 @end
@@ -33,10 +33,18 @@
     youtubeApiLibs.delegate = self;
     [youtubeApiLibs doLoginWithViewController:self];
     
-    [youtubeApiLibs getCategoriesWithRegionCode:@"JP" andLanguage:@"ja-JP"];
+    
 }
 
-// 画像の一覧
+// 画像一覧
+- (IBAction)docategoryVideo:(id)sender{
+    
+    CategoriesViewController *category = [[CategoriesViewController alloc]init];
+    [self.navigationController pushViewController:category animated:YES];
+   
+}
+
+// マイアップロード
 - (IBAction)doGetMyUpload:(id)sender
 {
     VideoListViewController *videoListController = [[VideoListViewController alloc]init];
@@ -113,7 +121,6 @@
             NSLog(@" identifier     [%@] \n",[data identifier]);
             NSLog(@"=====================================\n");
             
-            //Mỗi channel có nhiều playlist, lấy hết nó về
             // チャネルに対して全てプレイリストを習得
             [[YouTubeAPILibs sharedManager] getPlaylistsWithChannelIdentifier:data.identifier andMaxResults:1];
         }
