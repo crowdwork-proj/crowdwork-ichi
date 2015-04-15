@@ -20,7 +20,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:(CGRectZero) style:(UITableViewStylePlain)];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.rowHeight = 40;
+    self.tableView.rowHeight = 60;
     self.tableView.separatorColor = [UIColor clearColor];
     self.view = self.tableView;
     
@@ -70,10 +70,13 @@
     }
     GTLYouTubePlaylistItem *data = [self.videos objectAtIndex:indexPath.row];
     cell.textLabel.text = data.snippet.title;
-    //  cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ -- %@ views",
-    //                               [Utils humanReadableFromYouTubeTime:vidData.getDuration],
-    //                               vidData.getViews];
     
+    // Fetch synchronously the full sized image.
+    NSURL *url = [NSURL URLWithString:data.snippet.thumbnails.defaultProperty.url];
+    NSData *imageData = [NSData dataWithContentsOfURL:url];
+    UIImage *image = [UIImage imageWithData:imageData];
+    
+    cell.imageView.image =image;
 #pragma mark - GTLYouTubePlaylistItem data structure, can get image from thumbnails
     /*
      "kind": "youtube#playlistItem",

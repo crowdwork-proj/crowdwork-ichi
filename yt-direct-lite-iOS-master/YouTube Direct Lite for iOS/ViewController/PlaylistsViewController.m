@@ -74,7 +74,12 @@
     //  cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ -- %@ views",
     //                               [Utils humanReadableFromYouTubeTime:vidData.getDuration],
     //                               vidData.getViews];
+    // Fetch synchronously the full sized image.
+    NSURL *url = [NSURL URLWithString:data.snippet.thumbnails.defaultProperty.url];
+    NSData *imageData = [NSData dataWithContentsOfURL:url];
+    UIImage *image = [UIImage imageWithData:imageData];
     
+    cell.imageView.image =image;
     #pragma mark - GTLYouTubePlaylist data structure, can get image from thumbnails
     /**
      {
