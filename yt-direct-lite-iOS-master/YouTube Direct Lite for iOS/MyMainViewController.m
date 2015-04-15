@@ -130,7 +130,7 @@
     if (type == YTRequestTypePlaylists) {
         NSLog(@"playlists data %@",results);
         for (int i =0 ; i < [results count]; i++) {
-            GTLYouTubePlaylistItem *data = [results objectAtIndex:i];
+            GTLYouTubePlaylist *data = [results objectAtIndex:i];
             NSLog(@"=====================================\n");
             NSLog(@"PLAYLIST_LIST                        \n");
             NSLog(@" title          [%@] \n",data.snippet.title);

@@ -7,6 +7,6 @@
 @interface CategoriesViewController : UITableViewController<YouTubeAPILibsDelegate>
 
 @property(nonatomic, strong) UITableView *tableView;
-@property(nonatomic, strong) NSArray *videos;
+@property(nonatomic, strong) NSArray *categories;
 
 @end
