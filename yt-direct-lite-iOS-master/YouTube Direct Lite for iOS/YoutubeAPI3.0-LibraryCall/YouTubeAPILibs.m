@@ -26,11 +26,7 @@ static const CGFloat kCropDimension = 44;
         // Initialize the youtube service & load existing credentials from the keychain if available
         sharedMyManager.youtubeService = [[GTLServiceYouTube alloc] init];
         
-        sharedMyManager.youtubeService.authorizer =
-        [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
-                                                              clientID:kClientID
-         
-                                                          clientSecret:kClientSecret];
+        sharedMyManager.youtubeService.APIKey = @"AIzaSyCZTKoovVQQxGHvqFC1L0E98ydi4x3sFKc";
     });
     return sharedMyManager;
 }
@@ -40,6 +36,12 @@ static const CGFloat kCropDimension = 44;
 - (void)doLoginWithViewController: (UIViewController *) viewController
 {
     NSLog(@"---doLogin---");
+    
+    self.youtubeService.authorizer =
+    [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
+                                                          clientID:kClientID
+     
+                                                      clientSecret:kClientSecret];
     
     if (![self isAuthorized]) {
         // Not yet authorized, request authorization and push the login UI onto the navigation stack.
@@ -454,7 +456,7 @@ static const CGFloat kCropDimension = 44;
                  error:(NSError *)error {
     if (error != nil) {
         [Utils showAlert:@"Authentication Error" message:error.localizedDescription];
-        //self.youtubeService.authorizer = nil;
+        self.youtubeService.authorizer = nil;
     } else {
         self.youtubeService.authorizer = authResult;
     }
