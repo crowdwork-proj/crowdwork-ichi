@@ -467,6 +467,43 @@
     
 }
 
+- (void)searchVideobyKeyWord:(NSString*)keyWord requestType:(NSUInteger)requestType{
+   
+    // Create a query
+    GTLQueryYouTube *query = [GTLQueryYouTube queryForSearchListWithPart:@"id,snippet"];
+    query.maxResults = 20;
+    
+    if(requestType == YTSearchTypeKeyword)
+       query.q = keyWord;
+    else
+        query.relatedToVideoId = keyWord;
+    
+    query.videoEmbeddable = @"true";
+    query.type = @"video";
+    // Execute the query
+    [self.youtubeService executeQuery:query
+                                   completionHandler:^(GTLServiceTicket *ticket, id object, NSError *error) {
+                                       // This callback block is run when the fetch completes
+                                       if (error == nil) {
+                                           
+                                           GTLYouTubeSearchListResponse *products = object;
+                                           // iteration of items and subscript access to items.
+                                           for (GTLYouTubeSearchResult *item in products) {
+                                               NSMutableDictionary *dictionary = [item JSONValueForKey:@"id"];
+                                               NSLog(@"---video id--%@", [dictionary objectForKey:@"videoId"]);
+                                               NSLog(@"---video title---%@",item.snippet.title);
+                                               NSLog(@"---video icon---%@ ",item.snippet.thumbnails.defaultProperty.url);
+                                           }
+                                           
+                                       }else{
+                                           
+                                           NSLog(@"Error: %@", error.description);
+                                           
+                                       }
+                                   }];
+
+}
+
 
 /* -------------------- YOUTUBE OAUTH CALLBACK --------
    ---------------------------------------------------- */

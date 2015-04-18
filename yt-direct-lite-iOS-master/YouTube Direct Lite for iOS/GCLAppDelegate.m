@@ -8,12 +8,19 @@
 
 #import "GCLAppDelegate.h"
 #import "MyMainViewController.h"
-
+#import "YouTubeAPILibs.h"
 @implementation GCLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // windowはStoryboardから起動する
+    // ビデオ検索の例
+    // キーワードを入力する
+    [[YouTubeAPILibs sharedManager] searchVideobyKeyWord:@"oplus" requestType:YTSearchTypeKeyword];
+    // ユーザーごとの画像関連の例
+    // ビデオのidを挿入
+    [[YouTubeAPILibs sharedManager] searchVideobyKeyWord:@"lCtxvj6VppA" requestType:YTSearchTypeId];
+
     return YES;
 }
 

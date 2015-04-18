@@ -20,13 +20,19 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
     YTRequestTypeGetMyChanel = 2,
     YTRequestTypeGetListLike = 3,
     YTRequestTypeShowMyPlayList = 4,
-    YTRequestTypeViewVideoLater = 4,
+    YTRequestTypeViewVideoLater = 5,
+    YTRequestTypeViewRelateVideo = 6,
     
     /*例外アクセスに向かい*/
     YTRequestTypeCategories = 11,
     YTRequestTypeChannels = 12,
     YTRequestTypePlaylists = 13,
     YTRequestTypeVideos = 14
+};
+
+typedef NS_OPTIONS(NSUInteger, YTSearchType) {
+    YTSearchTypeKeyword = 1,
+    YTSearchTypeId = 2,
 };
 
 @protocol YouTubeAPILibsDelegate;
@@ -74,7 +80,10 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
 // ビデオ投稿
 - (void)uploadYouTubeVideoWithService:(NSData   *)fileData
                                 title:(NSString *)title
+
                           description:(NSString *)description;
+// ビデオ関連・検索
+- (void)searchVideobyKeyWord:(NSString*)keyWord requestType:(NSUInteger)requestType;
 /*
 *===================================================================================================
 *===================================================================================================

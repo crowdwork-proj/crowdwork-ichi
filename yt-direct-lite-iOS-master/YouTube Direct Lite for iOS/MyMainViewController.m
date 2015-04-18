@@ -33,7 +33,6 @@
     youtubeApiLibs.delegate = self;
     [youtubeApiLibs doLoginWithViewController:self];
     
-    
 }
 
 // 画像一覧
