@@ -13,7 +13,7 @@
 #import "Utils.h"
 #import "ChannelData.h"
 
-static const CGFloat kCropDimension = 44;
+
 @implementation YouTubeAPILibs
 
 @synthesize youtubeService;
@@ -430,6 +430,43 @@ static const CGFloat kCropDimension = 44;
         
     }];
 }
+
+- (void)uploadYouTubeVideoWithService:(NSData*)fileData
+                                title:(NSString *)title
+                          description:(NSString *)description {
+    
+    GTLYouTubeVideo *video = [GTLYouTubeVideo object];
+    GTLYouTubeVideoSnippet *snippet = [GTLYouTubeVideoSnippet alloc];
+    GTLYouTubeVideoStatus *status = [GTLYouTubeVideoStatus alloc];
+    status.privacyStatus = @"public";
+    snippet.title = title;
+    snippet.descriptionProperty = description;
+    snippet.tags = [NSArray arrayWithObjects:DEFAULT_KEYWORD,[UploadController generateKeywordFromPlaylistId:UPLOAD_PLAYLIST], nil];
+    video.snippet = snippet;
+    video.status = status;
+    
+    GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:fileData MIMEType:@"video/*"];
+    GTLQueryYouTube *query = [GTLQueryYouTube queryForVideosInsertWithObject:video part:@"snippet,status" uploadParameters:uploadParameters];
+    
+    [self.youtubeService executeQuery:query
+        completionHandler:^(GTLServiceTicket *ticket,
+                            GTLYouTubeVideo *insertedVideo, NSError *error) {
+            if (error == nil)
+            {
+                NSLog(@"----upload success --- File ID: %@", insertedVideo.identifier);
+                [self.delegate uploadYouTubeVideo:self didFinishWithResults:insertedVideo];
+                return;
+            }
+            else
+            {
+                NSLog(@"--- An error occurred --- : %@", error);
+                [self.delegate uploadYouTubeVideo:self didFinishWithResults:nil];
+                return;
+            }
+    }];
+    
+}
+
 
 /* -------------------- YOUTUBE OAUTH CALLBACK --------
    ---------------------------------------------------- */

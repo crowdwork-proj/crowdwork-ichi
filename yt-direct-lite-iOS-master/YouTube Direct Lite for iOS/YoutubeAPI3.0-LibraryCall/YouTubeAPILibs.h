@@ -11,6 +11,9 @@
 #import "VideoData.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "GTLYouTube.h"
+#import "UploadController.h"
+
+static const CGFloat kCropDimension = 44;
 
 typedef NS_OPTIONS(NSUInteger, YTRequestType) {
     YTRequestTypeShowMyListVideo = 1,
@@ -68,7 +71,10 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
 - (void)getMyListSeeVideoLater;
 // あなたへのおすすめ
 - (NSString*)showlistRecommendationVideo;
-
+// ビデオ投稿
+- (void)uploadYouTubeVideoWithService:(NSData   *)fileData
+                                title:(NSString *)title
+                          description:(NSString *)description;
 /*
 *===================================================================================================
 *===================================================================================================
@@ -97,6 +103,9 @@ typedef NS_OPTIONS(NSUInteger, YTRequestType) {
 // プロトコル　ー　コルバック機能を返す
 - (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType) type
      didFinishWithResults:(NSArray *)results;
+//　ビデオ投稿　ー　コルバック機能を返す
+- (void)uploadYouTubeVideo:(YouTubeAPILibs *)uploadVideo
+      didFinishWithResults:(GTLYouTubeVideo *)video;
 
 @end
 

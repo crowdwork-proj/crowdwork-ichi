@@ -10,7 +10,8 @@
 #import "YouTubeAPILibs.h"
 #import "Utils.h"
 
-@interface MyMainViewController : UIViewController <YouTubeAPILibsDelegate>
+@interface MyMainViewController : UIViewController <YouTubeAPILibsDelegate,
+                                                   UIImagePickerControllerDelegate>
 {
     IBOutlet UIButton *loginButton;
     IBOutlet UIButton *categoryVideo;
@@ -20,6 +21,7 @@
     IBOutlet UIButton *getListLikeButton;
     IBOutlet UIButton *getMyPlaylistButton;
     IBOutlet UIButton *viewAfterButton;
+    IBOutlet UIButton *uploadVideoButton;
     
 }
 
@@ -31,5 +33,6 @@
 - (IBAction)doGetListLike:(id)sender;
 - (IBAction)doGetMyPlayList:(id)sender;
 - (IBAction)doViewAfter:(id)sender;
+- (IBAction)uploadYoutubeVideo:(id)sender;
 
 @end

@@ -75,6 +75,51 @@
     [self.navigationController pushViewController:playListViewController animated:YES];
 }
 
+-  (IBAction)uploadYoutubeVideo:(id)sender
+{
+    [self showVideoLibrary];
+    
+}
+
+- (void)showVideoLibrary {
+    
+    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+    // In case we're running the iPhone simulator, fall back on the photo library instead.
+    cameraUI.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [Utils showAlert:@"Error" message:@"Sorry, iPad Simulator not supported!"];
+        return;
+    }
+    cameraUI.mediaTypes = [[NSArray alloc] initWithObjects:(NSString *)kUTTypeMovie, nil];
+    cameraUI.allowsEditing = YES;
+    cameraUI.delegate = self;
+    [self presentViewController:cameraUI animated:YES completion:nil];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker
+        didFinishPickingImage:(UIImage *)image
+                  editingInfo:(NSDictionary *)editingInfo {
+    
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker
+didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    
+    if (CFStringCompare((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo) {
+        NSURL *videoUrl = [info objectForKey:UIImagePickerControllerMediaURL];
+        
+        [[YouTubeAPILibs sharedManager] uploadYouTubeVideoWithService:[NSData dataWithContentsOfURL:videoUrl] title:@"--test--" description:@"--test---"];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
 #pragma mark - YouTubeAPILibsDelegate methods
 
 - (void)getYouTubeUploads:(YouTubeAPILibs *)getUploads withRequestType:(YTRequestType)type didFinishWithResults:(NSArray *)results {

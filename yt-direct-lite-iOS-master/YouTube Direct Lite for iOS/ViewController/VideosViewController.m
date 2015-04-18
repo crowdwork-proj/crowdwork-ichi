@@ -48,10 +48,7 @@
     
         self.videos = results;
     }
-    
-    
-    
-    
+
     [self.tableView reloadData];
     
 }
@@ -116,7 +113,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+   
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
